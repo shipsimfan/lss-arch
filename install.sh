@@ -17,8 +17,7 @@ set -e
 function user-input() {
     echo -n 
     read -p "$1 (Default: $2): "
-    if [ "$REPLY" = "" ]
-    then
+    if [ "$REPLY" = "" ]; then
         REPLY=$2
     fi
 }
@@ -53,8 +52,7 @@ echo "    Username: $USERNAME"
 
 read -p "Do you wish to proceed? [Y/n] " -n 1 -r
 echo
-if [[ ! $REPLY =~ ^[Yy]$ ]]
-then
+if [[ ! $REPLY =~ ^[Yy]$ ]]; then
     echo "Aborting . . ."
     exit -1
 fi

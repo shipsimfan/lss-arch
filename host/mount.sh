@@ -8,8 +8,7 @@ ROOT_PARTITION="$1"3
 
 echo "Unmounting /mnt . . ."
 swapoff -a
-if cat /proc/mounts | grep /mnt
-then
+if cat /proc/mounts | grep /mnt; then
     umount -Rf /mnt
 fi
 
