@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Verifying internet connection . . ."
 ping -c 1 archlinux.org &> /dev/null
 if [ ! $? -eq 0 ] 

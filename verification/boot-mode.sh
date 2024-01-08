@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 echo "Verifying boot mode . . ."
 if [ ! $(cat /sys/firmware/efi/fw_platform_size) -eq 64 ] 
 then

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 BOOT_PARTITION="$1"1
 SWAP_PARTITION="$1"2
 ROOT_PARTITION="$1"3

@@ -40,6 +40,7 @@ user-input "Enter the hostname" "lss-lab-unnamed"
 HOSTNAME=$REPLY
 
 # Confirm the users input
+echo
 echo "The following settings will be used for this install:"
 echo "    Drive: $DRIVE"
 echo "    Swap Size: $SWAP_SIZE GB"
@@ -57,6 +58,7 @@ fi
 echo
 echo "Installing Arch Linux to $DRIVE . . ."
 
-# Parition and format the destination drive
+# Parition, format, and mount the destination drive
 ./install-host/partition.sh $DRIVE $SWAP_SIZE
 ./install-host/format.sh $DRIVE
+./install-host/mount.sh $DRIVE
