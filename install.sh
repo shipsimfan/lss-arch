@@ -2,7 +2,10 @@
 
 # Installs ARCH linux on the system using an interactive guide
 
+set -e
+
 # Verify the system is in a good state to install
+./verification/root.sh
 ./verification/boot-mode.sh
 ./verification/internet.sh
 
