@@ -11,4 +11,5 @@ To install Arch Linux:
 `packages.list` contains the list of packages that are installed with Arch Linux. To add any 
 packages, add a newline to the end of the file with the name of package.
 
-Any files that match `*.pub` in the `chroot` folder will be used as SSH keys for the created user.
+Any files that match `*.pub` in the `chroot/keys` folder will be used as SSH keys for the created 
+user.
