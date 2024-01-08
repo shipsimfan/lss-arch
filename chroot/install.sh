@@ -18,6 +18,7 @@ USERNAME=$3
 
 # Setup system services
 /root/chroot/sudo.sh
+/root/chroot/ssh.sh $USERNAME
 
 # Install the bootloader
 /root/chroot/bootloader.sh
