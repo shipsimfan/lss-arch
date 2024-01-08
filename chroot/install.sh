@@ -9,3 +9,4 @@ HOSTNAME=$2
 USERNAME=$3
 
 /root/chroot/set-timezone.sh $TIME_ZONE
+/root/chroot/set-locale.sh
