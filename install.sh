@@ -65,3 +65,12 @@ echo "Installing Arch Linux to $DRIVE . . ."
 
 # Install the required packages
 ./host/pacstrap.sh packages.list
+
+# Generate the fstab file
+genfstab -U /mnt >> /mnt/etc/fstab
+
+# Copy the chroot scripts
+cp -r chroot /mnt/root/chroot
+
+# Enter the chroot
+arch-chroot /mnt /root/chroot/install.sh
