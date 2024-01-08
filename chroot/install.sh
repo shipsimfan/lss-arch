@@ -13,6 +13,9 @@ USERNAME=$3
 /root/chroot/set-locale.sh
 /root/chroot/set-hostname.sh $HOSTNAME
 
+# Create the user
+/root/chroot/user.sh $USERNAME
+
 # Setup system services
 /root/chroot/sudo.sh
 
