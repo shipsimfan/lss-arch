@@ -17,6 +17,7 @@ USERNAME=$3
 /root/chroot/user.sh $USERNAME
 
 # Setup system services
+mkdir -p /etc/systemd/system-preset
 /root/chroot/sudo.sh
 /root/chroot/ssh.sh $USERNAME
 /root/chroot/dhcpcd.sh
