@@ -10,31 +10,31 @@
 
 # Gets the user input
 #   USAGE: user-input PROMPT DEFAULT 
-#   Writes to $USER_INPUT
+#   Writes to $REPLY
 function user-input() {
-    echo -n $1 "(Default: $2): "
-    read USER_INPUT
-    if [ "$USER_INPUT" = "" ]
+    echo -n 
+    read -p "$1 (Default: $2): "
+    if [ "$REPLY" = "" ]
     then
-        USER_INPUT=$2
+        REPLY=$2
     fi
 }
 
 user-input "Enter the drive you wish to use" "/dev/sda"
-DRIVE=$USER_INPUT
+DRIVE=$REPLY
 
 MEMORY_KB=$(grep MemTotal /proc/meminfo | awk '{print $2}')
 MEMORY_GB=$((($MEMORY_KB + 1048575) / 1048576))
 user-input "Enter the swap size in gigabytes" $MEMORY_GB
-SWAP_SIZE=$USER_INPUT
+SWAP_SIZE=$REPLY
 
 LOCAL_TIME_PATH=$(readlink -f /etc/localtime)
 LOCAL_TIME=${LOCAL_TIME_PATH#"/usr/share/zoneinfo/"}
 user-input "Enter your timezone as \"Region/City\"" $LOCAL_TIME
-TIME_ZONE=$USER_INPUT
+TIME_ZONE=$REPLY
 
 user-input "Enter the hostname" "lss-lab-unnamed"
-HOSTNAME=$USER_INPUT
+HOSTNAME=$REPLY
 
 # Confirm the users input
 echo "The following settings will be used for this install:"
@@ -42,10 +42,17 @@ echo "    Drive: $DRIVE"
 echo "    Swap Size: $SWAP_SIZE GB"
 echo "    Timezone: $TIME_ZONE"
 echo "    Hostname: $HOSTNAME"
-echo -n "Do you wish to proceed? [Y/n] "
-read CONFIRM
-if [ ! $CONFIRM = ^[Yy]$ ]
+
+read -p "Do you wish to proceed? [Y/n] " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
     echo "Aborting . . ."
     exit -1
 fi
+
+echo
+echo "Installing Arch Linux to $DRIVE . . ."
+
+# Parition and format the destination drive
+./install-host/partition.sh $DRIVE $SWAP_SIZE
