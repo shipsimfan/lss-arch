@@ -39,6 +39,9 @@ TIME_ZONE=$REPLY
 user-input "Enter the hostname" "lss-lab-unnamed"
 HOSTNAME=$REPLY
 
+user-input "Enter a username" "lhart"
+USERNAME=$REPLY
+
 # Confirm the users input
 echo
 echo "The following settings will be used for this install:"
@@ -46,6 +49,7 @@ echo "    Drive: $DRIVE"
 echo "    Swap Size: $SWAP_SIZE GB"
 echo "    Timezone: $TIME_ZONE"
 echo "    Hostname: $HOSTNAME"
+echo "    Username: $USERNAME"
 
 read -p "Do you wish to proceed? [Y/n] " -n 1 -r
 echo
