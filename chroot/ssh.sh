@@ -8,6 +8,7 @@ cp /root/chroot/sshd_config /etc/ssh/sshd_config
 
 echo "Enabling SSH service . . ."
 cp /root/chroot/10-ssh.preset /etc/systemd/system-preset/10-ssh.preset
+ln -sf /usr/lib/systemd/system/sshd.service /etc/systemd/multi-user.target.wants/sshd.service
 
 echo "Installing keys . . ."
 mkdir -p /home/$1/.ssh

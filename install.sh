@@ -69,10 +69,22 @@ echo "Installing Arch Linux to $DRIVE . . ."
 ./host/pacstrap.sh packages.list
 
 # Generate the fstab file
+echo "Generating /etc/fstab . . ."
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Copy the chroot scripts
+echo "Copying the chroot scripts . . ."
 cp -r chroot /mnt/root
 
 # Enter the chroot
+echo "Entering the chroot . . ."
 arch-chroot /mnt /root/chroot/install.sh $TIME_ZONE $HOSTNAME $USERNAME
+
+# Unmount the partitions
+echo "Unmounting the partitions . . ."
+umount -R /mnt
+
+
+echo
+echo "INSTALL COMPLETE"
+echo "  You may now restart your system"
