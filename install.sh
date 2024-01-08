@@ -77,4 +77,4 @@ genfstab -U /mnt >> /mnt/etc/fstab
 cp -r chroot /mnt/root
 
 # Enter the chroot
-arch-chroot /mnt /root/chroot/install.sh
+arch-chroot /mnt /root/chroot/install.sh $TIME_ZONE $HOSTNAME $USERNAME
