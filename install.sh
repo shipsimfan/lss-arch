@@ -70,7 +70,7 @@ echo "Installing Arch Linux to $DRIVE . . ."
 genfstab -U /mnt >> /mnt/etc/fstab
 
 # Copy the chroot scripts
-cp -r chroot /mnt/root/chroot
+cp -r chroot /mnt/root
 
 # Enter the chroot
 arch-chroot /mnt /root/chroot/install.sh
