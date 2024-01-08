@@ -13,6 +13,9 @@ USERNAME=$3
 /root/chroot/set-locale.sh
 /root/chroot/set-hostname.sh $HOSTNAME
 
+# Setup system services
+/root/chroot/sudo.sh
+
 # Install the bootloader
 /root/chroot/bootloader.sh
 
