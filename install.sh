@@ -59,3 +59,4 @@ echo "Installing Arch Linux to $DRIVE . . ."
 
 # Parition and format the destination drive
 ./install-host/partition.sh $DRIVE $SWAP_SIZE
+./install-host/format.sh $DRIVE
