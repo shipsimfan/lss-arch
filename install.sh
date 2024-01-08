@@ -59,6 +59,9 @@ echo
 echo "Installing Arch Linux to $DRIVE . . ."
 
 # Parition, format, and mount the destination drive
-./install-host/partition.sh $DRIVE $SWAP_SIZE
-./install-host/format.sh $DRIVE
-./install-host/mount.sh $DRIVE
+./host/partition.sh $DRIVE $SWAP_SIZE
+./host/format.sh $DRIVE
+./host/mount.sh $DRIVE
+
+# Install the required packages
+./host/pacstrap.sh packages.list
