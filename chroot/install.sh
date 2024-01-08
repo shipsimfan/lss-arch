@@ -13,5 +13,8 @@ USERNAME=$3
 /root/chroot/set-locale.sh
 /root/chroot/set-hostname.sh $HOSTNAME
 
+# Install the bootloader
+/root/chroot/bootloader.sh
+
 # Remove chroot scripts when complete
 rm -rf /root/chroot
