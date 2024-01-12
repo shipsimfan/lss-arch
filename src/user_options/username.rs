@@ -16,13 +16,12 @@ impl Username {
             "Enter a username for the initial user"
         );
         let username = console.readln();
-        let username = if username.len() == 0 {
+
+        Username(if username.len() == 0 {
             DEFAULT_USERNAME.to_owned()
         } else {
             username
-        };
-
-        Username(username)
+        })
     }
 }
 
