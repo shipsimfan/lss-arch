@@ -55,6 +55,9 @@ macro_rules! print {
 }
 
 macro_rules! println {
+    ($console: expr) => {
+        $crate::println!($console, "")
+    };
     ($console: expr, $($arg:tt)*) => {
         $console.println(::std::format_args!($($arg)*))
     };
