@@ -1,3 +1,0 @@
-# Enable DHCPCD by default
-
-enable dhcpcd.service

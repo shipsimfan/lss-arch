@@ -1,3 +1,0 @@
-# Enable SSHD by default
-
-enable sshd.service

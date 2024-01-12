@@ -1,0 +1,9 @@
+[package]
+name = "lss-arch"
+version = "0.1.0"
+authors = ["Lance Hart <me@lancehart.ca>"]
+edition = "2021"
+description = "Arch Linux installer"
+repository = "https://github.com/shipsimfan/lss-arch"
+license = "GPL-3.0-or-later"
+publish = false
