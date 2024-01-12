@@ -1,6 +1,6 @@
 use std::{
     fmt::Arguments,
-    io::{stdin, stdout, StdinLock, StdoutLock, Write},
+    io::{stdin, stdout, BufRead, StdinLock, StdoutLock, Write},
 };
 
 /// The input and output of the program
@@ -38,6 +38,14 @@ impl<'a> Console<'a> {
         self.output.flush().unwrap();
         self.needs_newline = false;
     }
+
+    /// Gets a line of user input
+    pub(crate) fn readln(&mut self) -> String {
+        let mut output = String::new();
+        self.input.read_line(&mut output).unwrap();
+        self.needs_newline = false;
+        output
+    }
 }
 
 impl<'a> Drop for Console<'a> {
@@ -63,4 +71,11 @@ macro_rules! println {
     };
 }
 
-pub(crate) use {print, println};
+macro_rules! prompt {
+    ($console: expr, $default: expr, $($arg:tt)*) => {{
+        $crate::print!($console, $($arg)*);
+        $crate::print!($console, " (Default: {}): ", $default)
+    }};
+}
+
+pub(crate) use {print, println, prompt};
