@@ -1,10 +1,9 @@
 use crate::Console;
 use drive::Drive;
+use hostname::Hostname;
 use swap_size::SwapSize;
 use timezone::TimeZone;
 use username::Username;
-
-use self::hostname::Hostname;
 
 mod drive;
 mod hostname;
