@@ -1,10 +1,11 @@
+use confirm::confirm;
 use console::{print, println, prompt, Console};
-use user_options::{Internet, UserOptions};
-
-use crate::confirm::confirm;
+use partition::partition;
+use user_options::{Drive, Internet, SwapSize, UserOptions};
 
 mod confirm;
 mod console;
+mod partition;
 mod user_options;
 mod verify;
 
@@ -19,6 +20,13 @@ fn run(console: &mut Console) -> Result<(), Box<dyn std::error::Error>> {
 
     confirm(&user_options, console)?;
     println!(console);
+
+    println!(
+        console,
+        "Installing LSS Arch to {} . . .",
+        user_options.drive()
+    );
+    partition(console, user_options.drive(), user_options.swap_size())?;
 
     Ok(())
 }

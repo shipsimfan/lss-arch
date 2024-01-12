@@ -1,5 +1,5 @@
 use crate::{prompt, Console};
-use std::{borrow::Cow, path::Path};
+use std::{borrow::Cow, ffi::OsStr, path::Path};
 
 /// The drive to install to
 #[derive(Clone, PartialEq, Eq)]
@@ -26,5 +26,11 @@ impl Drive {
 impl std::fmt::Display for Drive {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         self.0.display().fmt(f)
+    }
+}
+
+impl AsRef<OsStr> for Drive {
+    fn as_ref(&self) -> &OsStr {
+        self.0.as_os_str()
     }
 }

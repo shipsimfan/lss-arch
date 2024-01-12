@@ -1,5 +1,5 @@
 use crate::{println, prompt, Console};
-use std::num::NonZeroU8;
+use std::{num::NonZeroU8, ops::Deref};
 
 /// The size of the swap partition in gigabytes
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -32,6 +32,14 @@ impl SwapSize {
         };
 
         SwapSize(NonZeroU8::new(swap_size))
+    }
+}
+
+impl Deref for SwapSize {
+    type Target = Option<NonZeroU8>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
     }
 }
 

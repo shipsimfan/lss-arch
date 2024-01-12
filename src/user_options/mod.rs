@@ -1,7 +1,5 @@
 use crate::Console;
-use drive::Drive;
 use hostname::Hostname;
-use swap_size::SwapSize;
 use timezone::TimeZone;
 use username::Username;
 
@@ -12,7 +10,9 @@ mod swap_size;
 mod timezone;
 mod username;
 
+pub(crate) use drive::Drive;
 pub(crate) use internet::Internet;
+pub(crate) use swap_size::SwapSize;
 
 /// The installation options the user selected
 pub(crate) struct UserOptions {
