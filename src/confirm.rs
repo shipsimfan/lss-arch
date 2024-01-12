@@ -9,12 +9,12 @@ pub(crate) fn confirm(
     options: &UserOptions,
     console: &mut Console,
 ) -> Result<(), NotConfirmedError> {
-    println!(console);
     println!(
         console,
         "The following options will be used for this install:"
     );
     println!(console, "  Drive: {}", options.drive());
+    println!(console, "  Swap Size: {}", options.swap_size());
 
     print!(console, "Do you wish to proceed? [Y/n] ");
     let confirm = console.readln();
@@ -29,7 +29,7 @@ impl std::error::Error for NotConfirmedError {}
 
 impl std::fmt::Display for NotConfirmedError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "the user did not confirm the install options, aborting")
+        write!(f, "install options not confirmed, aborting")
     }
 }
 

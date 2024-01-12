@@ -1,11 +1,12 @@
 use crate::{prompt, Console};
 use std::{borrow::Cow, path::Path};
 
+/// The drive to install to
+#[derive(Clone, PartialEq, Eq)]
+pub(crate) struct Drive(Cow<'static, Path>);
+
 /// The default drive to install to when the user doesn't specify
 const DEFAULT_DRIVE: &str = "/dev/sda";
-
-/// The drive to install to
-pub(crate) struct Drive(Cow<'static, Path>);
 
 impl Drive {
     /// Gets the drive from the user
