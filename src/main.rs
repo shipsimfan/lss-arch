@@ -1,5 +1,5 @@
 use console::{print, println, prompt, Console};
-use user_options::UserOptions;
+use user_options::{Internet, UserOptions};
 
 use crate::confirm::confirm;
 

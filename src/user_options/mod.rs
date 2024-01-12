@@ -7,9 +7,12 @@ use username::Username;
 
 mod drive;
 mod hostname;
+mod internet;
 mod swap_size;
 mod timezone;
 mod username;
+
+pub(crate) use internet::Internet;
 
 /// The installation options the user selected
 pub(crate) struct UserOptions {
@@ -18,6 +21,7 @@ pub(crate) struct UserOptions {
     time_zone: TimeZone,
     username: Username,
     hostname: Hostname,
+    internet: Internet,
 }
 
 impl UserOptions {
@@ -28,6 +32,7 @@ impl UserOptions {
         let time_zone = TimeZone::get(console);
         let username = Username::get(console);
         let hostname = Hostname::get(console);
+        let internet = Internet::get(console);
 
         UserOptions {
             drive,
@@ -35,6 +40,7 @@ impl UserOptions {
             username,
             time_zone,
             hostname,
+            internet,
         }
     }
 
@@ -61,5 +67,10 @@ impl UserOptions {
     /// Gets the hostname for the new system
     pub(crate) fn hostname(&self) -> &Hostname {
         &self.hostname
+    }
+
+    /// Gets the internet settings for the new system
+    pub(crate) fn internet(&self) -> &Internet {
+        &self.internet
     }
 }

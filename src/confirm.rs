@@ -1,4 +1,4 @@
-use crate::{print, println, Console, UserOptions};
+use crate::{print, println, Console, Internet, UserOptions};
 
 /// The user input was not confirmed
 #[derive(Clone, Copy, PartialEq, Eq)]
@@ -18,6 +18,36 @@ pub(crate) fn confirm(
     println!(console, "  TimeZone: {}", options.time_zone());
     println!(console, "  Username: {}", options.username());
     println!(console, "  Hostname: {}", options.hostname());
+    match options.internet() {
+        Internet::DHCP => println!(console, "  IP Address: DHCP"),
+        Internet::Static {
+            device,
+            ip,
+            gateway,
+            nameservers,
+        } => {
+            println!(console, "  Network Interface: {}", device);
+            println!(console, "  IP Address: {}", ip);
+            println!(console, "  Gateway: {}", gateway);
+
+            print!(console, "  Nameservers: ");
+            if nameservers.len() == 0 {
+                print!(console, "None")
+            } else {
+                let mut first = true;
+                for nameserver in nameservers {
+                    if first {
+                        first = false;
+                    } else {
+                        print!(console, ", ");
+                    }
+
+                    print!(console, "{}", nameserver);
+                }
+            }
+            println!(console);
+        }
+    }
 
     print!(console, "Do you wish to proceed? [Y/n] ");
     let confirm = console.readln();

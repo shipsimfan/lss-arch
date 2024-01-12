@@ -5,3 +5,11 @@ version = 3
 [[package]]
 name = "lss-arch"
 version = "0.1.0"
+dependencies = [
+ "net-utils",
+]
+
+[[package]]
+name = "net-utils"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-net-utils#9230abc09298abe7a2cbfe0d36307d8f20c52a30"

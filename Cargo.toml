@@ -7,3 +7,6 @@ description = "Arch Linux installer"
 repository = "https://github.com/shipsimfan/lss-arch"
 license = "GPL-3.0-or-later"
 publish = false
+
+[dependencies]
+net-utils.git = "https://github.com/shipsimfan/lib-net-utils"
