@@ -1,7 +1,9 @@
-use crate::Console;
+use crate::{print, println, Console};
 use drive::Drive;
+use error::NotConfirmedError;
 
 mod drive;
+mod error;
 
 /// The installation options the user selected
 pub(crate) struct UserOptions {
@@ -9,16 +11,30 @@ pub(crate) struct UserOptions {
 }
 
 impl UserOptions {
-    pub(crate) fn get(console: &mut Console) -> Self {
+    pub(crate) fn get(console: &mut Console) -> Result<Self, NotConfirmedError> {
+        // Get the options
         let drive = Drive::get(console);
 
-        UserOptions { drive }
+        // Confirm them
+        let options = UserOptions { drive };
+        options.confirm(console)?;
+        Ok(options)
     }
-}
 
-impl std::fmt::Display for UserOptions {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "The following options will be used for this install:")?;
-        write!(f, "  Drive: {}", self.drive)
+    pub(crate) fn confirm(&self, console: &mut Console) -> Result<(), NotConfirmedError> {
+        println!(console);
+        println!(
+            console,
+            "The following options will be used for this install:"
+        );
+        println!(console, "  Drive: {}", self.drive);
+
+        print!(console, "Do you wish to proceed? [Y/n] ");
+        let confirm = console.readln();
+        if confirm.as_bytes()[0].to_ascii_lowercase() == b'y' {
+            Ok(())
+        } else {
+            Err(NotConfirmedError)
+        }
     }
 }

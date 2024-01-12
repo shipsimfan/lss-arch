@@ -10,10 +10,7 @@ fn run(console: &mut Console) -> Result<(), Box<dyn std::error::Error>> {
     verify::verify_state(console)?;
     println!(console);
 
-    let user_options = UserOptions::get(console);
-    println!(console);
-
-    println!(console, "{}", user_options);
+    let user_options = UserOptions::get(console)?;
     println!(console);
 
     Ok(())
