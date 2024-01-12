@@ -1,12 +1,14 @@
 use confirm::confirm;
 use console::{print, println, prompt, Console};
 use format::format;
+use mount::mount;
 use partition::partition;
 use user_options::{Drive, Internet, SwapSize, UserOptions};
 
 mod confirm;
 mod console;
 mod format;
+mod mount;
 mod partition;
 mod user_options;
 mod verify;
@@ -30,6 +32,7 @@ fn run(console: &mut Console) -> Result<(), Box<dyn std::error::Error>> {
     );
     partition(console, user_options.drive(), user_options.swap_size())?;
     format(console, user_options.drive(), user_options.swap_size())?;
+    mount(console, user_options.drive(), user_options.swap_size())?;
 
     Ok(())
 }
