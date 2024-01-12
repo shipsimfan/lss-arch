@@ -33,7 +33,15 @@ fn run(console: &mut Console) -> Result<(), Box<dyn std::error::Error>> {
     partition(console, user_options.drive(), user_options.swap_size())?;
     format(console, user_options.drive(), user_options.swap_size())?;
     mount(console, user_options.drive(), user_options.swap_size())?;
+    // TODO: install packages
+    // TODO: genfstab
+    // TODO: enter chroot
 
+    // TODO: unmount the partitions
+
+    println!(console);
+    println!(console, "INSTALL COMPLETE");
+    println!(console, "  You may now reboot your system");
     Ok(())
 }
 
