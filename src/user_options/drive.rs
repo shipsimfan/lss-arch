@@ -5,7 +5,7 @@ use std::{borrow::Cow, path::Path};
 const DEFAULT_DRIVE: &str = "/dev/sda";
 
 /// The drive to install to
-pub(super) struct Drive(Cow<'static, Path>);
+pub(crate) struct Drive(Cow<'static, Path>);
 
 impl Drive {
     /// Gets the drive from the user
