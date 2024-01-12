@@ -15,8 +15,9 @@ pub(crate) fn confirm(
     );
     println!(console, "  Drive: {}", options.drive());
     println!(console, "  Swap Size: {}", options.swap_size());
-    println!(console, "  Username: {}", options.username());
     println!(console, "  TimeZone: {}", options.time_zone());
+    println!(console, "  Username: {}", options.username());
+    println!(console, "  Hostname: {}", options.hostname());
 
     print!(console, "Do you wish to proceed? [Y/n] ");
     let confirm = console.readln();

@@ -4,7 +4,10 @@ use swap_size::SwapSize;
 use timezone::TimeZone;
 use username::Username;
 
+use self::hostname::Hostname;
+
 mod drive;
+mod hostname;
 mod swap_size;
 mod timezone;
 mod username;
@@ -13,8 +16,9 @@ mod username;
 pub(crate) struct UserOptions {
     drive: Drive,
     swap_size: SwapSize,
-    username: Username,
     time_zone: TimeZone,
+    username: Username,
+    hostname: Hostname,
 }
 
 impl UserOptions {
@@ -22,14 +26,16 @@ impl UserOptions {
     pub(crate) fn get(console: &mut Console) -> Self {
         let drive = Drive::get(console);
         let swap_size = SwapSize::get(console);
-        let username = Username::get(console);
         let time_zone = TimeZone::get(console);
+        let username = Username::get(console);
+        let hostname = Hostname::get(console);
 
         UserOptions {
             drive,
             swap_size,
             username,
             time_zone,
+            hostname,
         }
     }
 
@@ -51,5 +57,10 @@ impl UserOptions {
     /// Gets the time zone for the new system
     pub(crate) fn time_zone(&self) -> &TimeZone {
         &self.time_zone
+    }
+
+    /// Gets the hostname for the new system
+    pub(crate) fn hostname(&self) -> &Hostname {
+        &self.hostname
     }
 }
