@@ -2,13 +2,12 @@ use crate::{prompt, Console};
 
 /// Initial user details
 #[derive(Clone)]
-pub(crate) struct User {
-    username: String,
-}
+pub(crate) struct Username(String);
 
+/// The default username for the initial user
 const DEFAULT_USERNAME: &str = "lhart";
 
-impl User {
+impl Username {
     /// Gets the initial user details from the user
     pub(super) fn get(console: &mut Console) -> Self {
         prompt!(
@@ -23,10 +22,12 @@ impl User {
             username
         };
 
-        User { username }
+        Username(username)
     }
+}
 
-    pub(crate) fn username(&self) -> &str {
-        &self.username
+impl std::fmt::Display for Username {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.0)
     }
 }
