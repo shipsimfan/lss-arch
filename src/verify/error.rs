@@ -3,6 +3,7 @@
 pub(crate) enum VerifyError {
     NotRunningAsRoot,
     NotUEFI64Bit,
+    NotConnectedToInternet,
 }
 
 impl std::error::Error for VerifyError {}
@@ -16,6 +17,10 @@ impl std::fmt::Display for VerifyError {
             VerifyError::NotUEFI64Bit => {
                 write!(f, "the system was not booted in 64-bit mode with UEFI")
             }
+            VerifyError::NotConnectedToInternet => write!(
+                f,
+                "cannot ping archlinux.org, verify you are connected to the internet and try again"
+            ),
         }
     }
 }

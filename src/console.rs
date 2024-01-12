@@ -28,12 +28,14 @@ impl<'a> Console<'a> {
     pub(crate) fn print(&mut self, arguments: Arguments) {
         self.needs_newline = true;
         self.output.write_fmt(arguments).unwrap();
+        self.output.flush().unwrap();
     }
 
     /// Prints `arguments` to stdout with a newline
     pub(crate) fn println(&mut self, arguments: Arguments) {
         self.output.write_fmt(arguments).unwrap();
         self.output.write(b"\n").unwrap();
+        self.output.flush().unwrap();
         self.needs_newline = false;
     }
 }
