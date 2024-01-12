@@ -19,10 +19,12 @@ impl FDisk {
         Ok(FDisk(fdisk))
     }
 
+    /// Creates a blank GUID partition table on the drive
     pub(super) fn create_guid_table(&mut self) -> std::io::Result<()> {
         self.write("g\n")
     }
 
+    /// Creates a new partition on the drive
     pub(super) fn create_partition(
         &mut self,
         size: Option<&str>,
@@ -48,6 +50,7 @@ impl FDisk {
         Ok(())
     }
 
+    /// Writes the new partition table to disk
     pub(super) fn finalize(mut self) -> std::io::Result<()> {
         self.write("w\nq\n")
     }
