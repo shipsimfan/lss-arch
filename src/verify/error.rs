@@ -2,6 +2,7 @@
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum VerifyError {
     NotRunningAsRoot,
+    NotUEFI64Bit,
 }
 
 impl std::error::Error for VerifyError {}
@@ -11,6 +12,9 @@ impl std::fmt::Display for VerifyError {
         match self {
             VerifyError::NotRunningAsRoot => {
                 write!(f, "currently not running as root, please run this as root")
+            }
+            VerifyError::NotUEFI64Bit => {
+                write!(f, "the system was not booted in 64-bit mode with UEFI")
             }
         }
     }

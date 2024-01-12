@@ -1,6 +1,7 @@
 use super::{println, Console};
 use error::VerifyError;
 
+mod boot_mode;
 mod error;
 mod root;
 
@@ -9,8 +10,7 @@ pub(super) fn verify_state(console: &mut Console) -> Result<(), VerifyError> {
     println!(console, "Verifying the system state . . .");
 
     root::verify(console)?;
-
-    // Check for boot mode
+    boot_mode::verify(console)?;
 
     // Check for internet
 
