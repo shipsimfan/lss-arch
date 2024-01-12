@@ -9,8 +9,7 @@ pub fn verify(console: &mut Console) -> Result<(), VerifyError> {
 
     let boot_mode = std::fs::read(BOOT_MODE_PATH).map_err(|_| VerifyError::NotUEFI64Bit)?;
     if boot_mode.as_slice() == b"64\n" {
-        println!(console, "OK");
-        Ok(())
+        Ok(println!(console, "OK"))
     } else {
         Err(VerifyError::NotUEFI64Bit)
     }

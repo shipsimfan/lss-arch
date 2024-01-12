@@ -11,8 +11,7 @@ pub fn verify(console: &mut Console) -> Result<(), VerifyError> {
 
     let euid = unsafe { geteuid() };
     if euid == 0 {
-        println!(console, "OK");
-        Ok(())
+        Ok(println!(console, "OK"))
     } else {
         Err(VerifyError::NotRunningAsRoot)
     }
