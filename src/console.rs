@@ -44,7 +44,7 @@ impl<'a> Console<'a> {
         let mut output = String::new();
         self.input.read_line(&mut output).unwrap();
         self.needs_newline = false;
-        output
+        output.trim().to_owned()
     }
 }
 

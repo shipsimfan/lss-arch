@@ -15,10 +15,11 @@ pub(crate) fn confirm(
     );
     println!(console, "  Drive: {}", options.drive());
     println!(console, "  Swap Size: {}", options.swap_size());
+    println!(console, "  Username: {}", options.user().username());
 
     print!(console, "Do you wish to proceed? [Y/n] ");
     let confirm = console.readln();
-    if confirm.as_bytes()[0].to_ascii_lowercase() == b'y' {
+    if confirm.len() > 0 && confirm.as_bytes()[0].to_ascii_lowercase() == b'y' {
         Ok(())
     } else {
         Err(NotConfirmedError)

@@ -19,11 +19,11 @@ impl SwapSize {
 
             let swap_size = console.readln();
 
-            if swap_size.trim().len() == 0 {
+            if swap_size.len() == 0 {
                 break 0;
             }
 
-            match swap_size.trim().parse() {
+            match swap_size.parse() {
                 Ok(swap_size) => break swap_size,
                 Err(_) => {
                     println!(console, "Error: invalid size entered");

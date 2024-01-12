@@ -15,7 +15,7 @@ impl Drive {
 
         let drive = console.readln();
 
-        Drive(if drive.trim().len() == 0 {
+        Drive(if drive.len() == 0 {
             Cow::Borrowed(Path::new(DEFAULT_DRIVE))
         } else {
             Cow::Owned(drive.into())
