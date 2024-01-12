@@ -2,6 +2,7 @@ use super::VerifyError;
 use crate::{print, println, Console};
 use std::process::{Command, Stdio};
 
+/// The arguments to ping `archlinux.org` once
 const PING_ARGS: &[&str] = &["-c", "1", "archlinux.org"];
 
 /// Verifies the program is connected to the internet

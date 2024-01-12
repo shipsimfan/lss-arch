@@ -1,8 +1,13 @@
 /// An error while verifying the program state
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub(crate) enum VerifyError {
+    /// The program is not running as root
     NotRunningAsRoot,
+
+    /// The OS was not booted by UEFI into 64-bit mode
     NotUEFI64Bit,
+
+    /// The machine is not connected to the internet
     NotConnectedToInternet,
 }
 

@@ -1,6 +1,7 @@
 use super::VerifyError;
 use crate::{print, println, Console};
 
+/// The path to read how the system was booted
 const BOOT_MODE_PATH: &'static str = "/sys/firmware/efi/fw_platform_size";
 
 /// Verifies the OS was launched from 64-bit UEFI
