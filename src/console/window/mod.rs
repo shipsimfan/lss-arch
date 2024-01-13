@@ -1,6 +1,9 @@
 use crate::{try_curses, CursesError};
+use active_attribute::ActiveAttribute;
 use curses::CHType;
 use std::ptr::null_mut;
+
+mod active_attribute;
 
 /// A curses window
 pub struct Window {
@@ -24,6 +27,11 @@ impl Window {
         try_curses!(curses::wbkgd(self.inner, color | b' ' as CHType))
     }
 
+    /// Sets an attribute for future writes
+    pub fn set_attribute(&self, attribute: CHType) -> Result<ActiveAttribute, CursesError> {
+        ActiveAttribute::new(attribute, self)
+    }
+
     /// Writes `s` to the window
     pub fn write(&self, s: &str) -> Result<(), CursesError> {
         try_curses!(curses::waddnstr(
@@ -36,9 +44,9 @@ impl Window {
 
     /// Writes `s` to the window with `attribute`
     pub fn write_with_attribute(&self, s: &str, attribute: CHType) -> Result<(), CursesError> {
-        try_curses!(curses::wattron(self.inner, attribute))?;
+        let active_attribute = self.set_attribute(attribute)?;
         self.write(s)?;
-        try_curses!(curses::wattroff(self.inner, attribute))
+        active_attribute.end()
     }
 
     /// Gets a character from the keyboard
