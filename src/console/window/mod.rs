@@ -61,10 +61,34 @@ impl<'window> Window<'window> {
         ))
     }
 
+    /// Writes `s` to the window at `(x, y)`
+    pub fn write_at(&mut self, x: i32, y: i32, s: &str) -> CursesResult<()> {
+        try_curses!(curses::mvwaddnstr(
+            self.inner,
+            y,
+            x,
+            s.as_ptr() as _,
+            s.len() as i32
+        ))
+    }
+
     /// Writes `s` to the window with `attribute`
-    pub fn write_with_attribute(&mut self, s: &str, attribute: CHType) -> CursesResult<()> {
+    pub fn write_with_attribute(&mut self, attribute: CHType, s: &str) -> CursesResult<()> {
         let mut active_attribute = self.set_attribute(attribute)?;
         active_attribute.write(s)?;
+        active_attribute.end()
+    }
+
+    /// Writes `s` to the window at `(x, y)` with `attribute`
+    pub fn write_at_with_attribute(
+        &mut self,
+        x: i32,
+        y: i32,
+        attribute: CHType,
+        s: &str,
+    ) -> CursesResult<()> {
+        let mut active_attribute = self.set_attribute(attribute)?;
+        active_attribute.write_at(x, y, s)?;
         active_attribute.end()
     }
 
@@ -92,6 +116,7 @@ impl<'window> Window<'window> {
         y: i32,
         width: i32,
         height: i32,
+        title: &str,
         colors: &'child Colors,
     ) -> CursesResult<Window<'child>> {
         // Create the window
@@ -108,6 +133,12 @@ impl<'window> Window<'window> {
         // Setup the window
         window.set_color(colors.window_color())?;
         try_curses!(curses::r#box(window.inner, 0, 0))?;
+
+        // Write title
+        let title_x = (width / 2) - (title.len() as i32 / 2) - 1;
+        window.write_at(title_x, 0, " ")?;
+        window.write_with_attribute(curses::A_BOLD, title)?;
+        window.write(" ")?;
 
         Ok(window)
     }

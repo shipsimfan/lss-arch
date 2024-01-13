@@ -35,18 +35,18 @@ impl<'a> Console<'a> {
         set_basic_options(&mut root)?;
 
         root.set_color(colors.background_color())?;
-        root.write_with_attribute(title, curses::A_BOLD)?;
+        root.write_with_attribute(curses::A_BOLD, title)?;
         root.flush()?;
 
         Ok(Console { root, colors })
     }
 
     /// Creates a new [`Window`] on the console
-    pub fn new_window(&mut self, width: i32, height: i32) -> CursesResult<Window> {
+    pub fn new_window(&mut self, width: i32, height: i32, title: &str) -> CursesResult<Window> {
         let x = (self.root.width() / 2) - (width / 2);
         let y = (self.root.height() / 2) - (height / 2);
 
         self.root
-            .subwindow_with_colors(x, y, width, height, &self.colors)
+            .subwindow_with_colors(x, y, width, height, title, &self.colors)
     }
 }
