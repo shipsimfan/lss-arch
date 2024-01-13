@@ -1,52 +1,62 @@
-use crate::try_curses;
 use colors::Colors;
 use error::CursesResult;
+use init::init;
 use window::Window;
 
 mod colors;
 mod error;
+mod init;
 mod window;
 
 pub use error::CursesError;
 
 /// A curses instance
-pub struct Console<'a> {
-    /// The root window
-    root: Window<'a>,
-
+pub struct Console {
     /// The colors for the application
     colors: Colors,
+
+    /// The width of the terminal
+    width: i32,
+
+    /// The height of the terminal
+    height: i32,
 }
 
-/// Sets the basic options in curses for the program
-fn set_basic_options(window: &mut Window) -> CursesResult<()> {
-    try_curses!(curses::cbreak())?;
-    try_curses!(curses::noecho())?;
-    try_curses!(curses::keypad(window.inner(), true))?;
-    try_curses!(curses::curs_set(0))
-}
-
-impl<'a> Console<'a> {
-    /// Creates a new [`Window`]
+impl Console {
+    /// Creates a new [`Console`]
     pub fn new(title: &str) -> CursesResult<Self> {
-        let mut root = Window::new_root()?;
-        let colors = Colors::new()?;
+        let (colors, width, height) = init(title)?;
 
-        set_basic_options(&mut root)?;
-
-        root.set_color(colors.background_color())?;
-        root.write_with_attribute(curses::A_BOLD, title)?;
-        root.flush()?;
-
-        Ok(Console { root, colors })
+        Ok(Console {
+            colors,
+            width,
+            height,
+        })
     }
 
-    /// Creates a new [`Window`] on the console
-    pub fn new_window(&mut self, width: i32, height: i32, title: &str) -> CursesResult<Window> {
-        let x = (self.root.width() / 2) - (width / 2);
-        let y = (self.root.height() / 2) - (height / 2);
+    /// Gets the [`Colors`] for the program
+    pub fn colors(&self) -> &Colors {
+        &self.colors
+    }
 
-        self.root
-            .subwindow_with_colors(x, y, width, height, title, &self.colors)
+    /// Gets the width of the console
+    pub fn width(&self) -> i32 {
+        self.width
+    }
+
+    /// Gets the height of the console
+    pub fn height(&self) -> i32 {
+        self.height
+    }
+
+    // Creates a new [`Window`] on the console
+    pub fn new_window(&mut self, width: i32, height: i32, title: &str) -> CursesResult<Window> {
+        Window::new(self, width, height, title)
+    }
+}
+
+impl Drop for Console {
+    fn drop(&mut self) {
+        unsafe { curses::endwin() };
     }
 }

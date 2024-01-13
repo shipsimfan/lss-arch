@@ -8,11 +8,13 @@ pub struct Colors;
 
 // Predefined color pair indices
 const BACKGROUND_COLOR_PAIR: c_short = 1; // Blue back + yellow fore
-const NORMAL_COLOR_PAIR: c_short = 2;
+const NORMAL_COLOR_PAIR: c_short = 2; // Gray back + black fore
+const SHADOW_COLOR_PAIR: c_short = 3; // Black back + black fore
 
 // Attributes for color pairs
 const A_BACKGROUND_COLOR_PAIR: CHType = curses::color_pair!(BACKGROUND_COLOR_PAIR);
 const A_NORMAL_COLOR_PAIR: CHType = curses::color_pair!(NORMAL_COLOR_PAIR);
+const A_SHADOW_COLOR_PAIR: CHType = curses::color_pair!(SHADOW_COLOR_PAIR);
 
 /// Initializes all colors used
 fn init_colors() -> CursesResult<()> {
@@ -29,17 +31,20 @@ fn init_colors() -> CursesResult<()> {
 /// Initializes all the color pairs
 fn init_color_pairs() -> CursesResult<()> {
     init_color_pair(BACKGROUND_COLOR_PAIR, COLOR_YELLOW, COLOR_BLUE)?;
-    init_color_pair(NORMAL_COLOR_PAIR, COLOR_BLACK, COLOR_WHITE)
+    init_color_pair(NORMAL_COLOR_PAIR, COLOR_BLACK, COLOR_WHITE)?;
+    init_color_pair(SHADOW_COLOR_PAIR, COLOR_BLACK, COLOR_BLACK)
 }
 
 /// Initializes `color` to `rgb`
 fn init_color(color: c_short, rgb: [c_short; 3]) -> CursesResult<()> {
-    try_curses!(curses::init_color(color, rgb[0], rgb[1], rgb[2],))
+    try_curses!(curses::init_color(color, rgb[0], rgb[1], rgb[2],))?;
+    Ok(())
 }
 
 /// Initializes a color pair
 fn init_color_pair(pair: c_short, f: c_short, b: c_short) -> CursesResult<()> {
-    try_curses!(curses::init_pair(pair, f, b))
+    try_curses!(curses::init_pair(pair, f, b))?;
+    Ok(())
 }
 
 impl Colors {
@@ -61,5 +66,10 @@ impl Colors {
     /// The color used for windows
     pub fn window_color(&self) -> CHType {
         A_NORMAL_COLOR_PAIR
+    }
+
+    /// The color used for window shadows
+    pub fn shadow_color(&self) -> CHType {
+        A_SHADOW_COLOR_PAIR
     }
 }

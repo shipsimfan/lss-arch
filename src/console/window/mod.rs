@@ -1,151 +1,60 @@
-use super::{colors::Colors, CursesError, CursesResult};
+use super::{Console, CursesError, CursesResult};
 use crate::try_curses;
-use active_attribute::ActiveAttribute;
 use curses::CHType;
-use std::ptr::null_mut;
+use std::ptr::NonNull;
 
-mod active_attribute;
+mod init;
 
 /// A curses window
 pub struct Window<'window> {
     /// The underlying curses window
-    inner: *mut curses::Window,
+    inner: NonNull<curses::Window>,
 
-    /// The colors of the console
-    colors: Option<&'window Colors>,
+    /// The width of the window
+    width: i32,
+
+    /// The height of the window
+    height: i32,
+
+    /// The console this window is on
+    console: &'window mut Console,
 }
 
 impl<'window> Window<'window> {
-    /// Create the root window and initialize curses
-    pub(super) fn new_root() -> CursesResult<Self> {
-        let inner = unsafe { curses::initscr() };
-        if inner == null_mut() {
-            return Err(CursesError);
-        } else {
-            Ok(Window {
-                inner,
-                colors: None,
-            })
-        }
-    }
-
-    /// Gets the width of the window
-    pub fn width(&self) -> i32 {
-        unsafe { curses::getmaxx(self.inner) }
-    }
-
-    /// Gets the height of the window
-    pub fn height(&self) -> i32 {
-        unsafe { curses::getmaxy(self.inner) }
-    }
-
-    /// Sets the foreground and background color of the window
-    pub fn set_color(&mut self, color: CHType) -> CursesResult<()> {
-        try_curses!(curses::wbkgd(self.inner, color | b' ' as CHType))
-    }
-
-    /// Sets an attribute for future writes
-    pub fn set_attribute<'attribute>(
-        &'attribute mut self,
-        attribute: CHType,
-    ) -> CursesResult<ActiveAttribute<'attribute, 'window>> {
-        ActiveAttribute::new(attribute, self)
-    }
-
-    /// Writes `s` to the window
-    pub fn write(&mut self, s: &str) -> CursesResult<()> {
-        try_curses!(curses::waddnstr(
-            self.inner,
-            s.as_ptr() as _,
-            s.len() as i32
-        ))
-    }
-
-    /// Writes `s` to the window at `(x, y)`
-    pub fn write_at(&mut self, x: i32, y: i32, s: &str) -> CursesResult<()> {
-        try_curses!(curses::mvwaddnstr(
-            self.inner,
-            y,
-            x,
-            s.as_ptr() as _,
-            s.len() as i32
-        ))
-    }
-
-    /// Writes `s` to the window with `attribute`
-    pub fn write_with_attribute(&mut self, attribute: CHType, s: &str) -> CursesResult<()> {
-        let mut active_attribute = self.set_attribute(attribute)?;
-        active_attribute.write(s)?;
-        active_attribute.end()
-    }
-
-    /// Writes `s` to the window at `(x, y)` with `attribute`
-    pub fn write_at_with_attribute(
-        &mut self,
-        x: i32,
-        y: i32,
-        attribute: CHType,
-        s: &str,
-    ) -> CursesResult<()> {
-        let mut active_attribute = self.set_attribute(attribute)?;
-        active_attribute.write_at(x, y, s)?;
-        active_attribute.end()
-    }
-
-    /// Flushes any changes to the screen
-    pub fn flush(&mut self) -> CursesResult<()> {
-        try_curses!(curses::wrefresh(self.inner))
-    }
-
-    /// Gets a character from the keyboard
-    #[allow(unused_unsafe)]
-    pub fn get_char(&mut self) -> CursesResult<i32> {
-        let ret = unsafe { curses::wgetch(self.inner) };
-        try_curses!(ret).map(|_| ret)
-    }
-
-    /// Gets the underlying curses window
-    pub(super) unsafe fn inner(&mut self) -> *mut curses::Window {
-        self.inner
-    }
-
-    /// Creates a sub-window to this window
-    pub(super) fn subwindow_with_colors<'child>(
-        &'child mut self,
-        x: i32,
-        y: i32,
+    /// Creates a new [`Window`]
+    pub(super) fn new(
+        console: &'window mut Console,
         width: i32,
         height: i32,
         title: &str,
-        colors: &'child Colors,
-    ) -> CursesResult<Window<'child>> {
-        // Create the window
-        let inner = unsafe { curses::derwin(self.inner, height, width, y, x) };
-        if inner == null_mut() {
-            return Err(CursesError);
-        }
+    ) -> CursesResult<Self> {
+        let (x, y) = init::calculate_position(width, height, console);
 
-        let mut window = Window {
+        let inner = init::create_window(x, y, width, height, console.colors().window_color())?;
+
+        // TODO: Add the shadow
+
+        init::write_border(inner)?;
+        init::write_title(inner, width, title)?;
+
+        Ok(Window {
             inner,
-            colors: Some(colors),
-        };
+            width,
+            height,
+            console,
+        })
+    }
 
-        // Setup the window
-        window.set_color(colors.window_color())?;
-        try_curses!(curses::r#box(window.inner, 0, 0))?;
-
-        // Write title
-        let title_x = (width / 2) - (title.len() as i32 / 2) - 1;
-        window.write_at(title_x, 0, " ")?;
-        window.write_with_attribute(curses::A_BOLD, title)?;
-        window.write(" ")?;
-
-        Ok(window)
+    /// Gets a character from the keyboard
+    pub fn get_char(&mut self) -> CursesResult<i32> {
+        try_curses!(curses::wgetch(self.inner.as_ptr()))
     }
 }
 
 impl<'window> Drop for Window<'window> {
     fn drop(&mut self) {
-        unsafe { curses::endwin() };
+        unsafe { curses::delwin(self.inner.as_ptr()) };
+
+        // TODO: Erase the shadow
     }
 }

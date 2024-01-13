@@ -25,11 +25,12 @@ impl Display for CursesError {
 
 #[macro_export]
 macro_rules! try_curses {
-    ($expr: expr) => {
-        if unsafe { $expr } == ::curses::ERR {
+    ($expr: expr) => {{
+        let result = unsafe { $expr };
+        if result == ::curses::ERR {
             Err($crate::console::CursesError)
         } else {
-            Ok(())
+            Ok(result)
         }
-    };
+    }};
 }
