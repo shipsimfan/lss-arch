@@ -10,9 +10,9 @@ mod window;
 pub use error::CursesError;
 
 /// A curses instance
-pub struct Console {
+pub struct Console<'a> {
     /// The root window
-    root: Window,
+    root: Window<'a>,
 
     /// The colors for the application
     colors: Colors,
@@ -27,7 +27,7 @@ fn set_basic_options(window: &mut Window) -> CursesResult<()> {
     try_curses!(curses::curs_set(0))
 }
 
-impl Console {
+impl<'a> Console<'a> {
     /// Creates a new [`Window`]
     pub fn new(title: &str) -> CursesResult<Self> {
         let mut root = Window::new_root()?;
@@ -41,8 +41,13 @@ impl Console {
         Ok(Console { root, colors })
     }
 
-    /// Gets a character from the keyboard
-    pub fn get_char(&mut self) -> CursesResult<i32> {
-        self.root.get_char()
+    /// Creates a new [`Window`] on the console
+    pub fn new_window(&mut self, width: i32, height: i32) -> CursesResult<Window> {
+        let x = (self.root.width() / 2) - (width / 2);
+        let y = (self.root.height() / 2) - (height / 2);
+
+        let mut window = self.root.subwindow(x, y, width, height)?;
+        window.set_color(self.colors.window_color())?;
+        Ok(window)
     }
 }

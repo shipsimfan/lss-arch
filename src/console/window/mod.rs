@@ -2,24 +2,59 @@ use super::{CursesError, CursesResult};
 use crate::try_curses;
 use active_attribute::ActiveAttribute;
 use curses::CHType;
-use std::ptr::null_mut;
+use std::{marker::PhantomData, ptr::null_mut};
 
 mod active_attribute;
 
 /// A curses window
-pub struct Window {
+pub struct Window<'window> {
     /// The underlying curses window
     inner: *mut curses::Window,
+
+    /// Represents the parent window
+    parent: PhantomData<&'window mut ()>,
 }
 
-impl Window {
+impl<'window> Window<'window> {
     /// Create the root window and initialize curses
     pub(super) fn new_root() -> CursesResult<Self> {
         let inner = unsafe { curses::initscr() };
         if inner == null_mut() {
             return Err(CursesError);
         } else {
-            Ok(Window { inner })
+            Ok(Window {
+                inner,
+                parent: PhantomData,
+            })
+        }
+    }
+
+    /// Gets the width of the window
+    pub fn width(&self) -> i32 {
+        unsafe { curses::getmaxx(self.inner) }
+    }
+
+    /// Gets the height of the window
+    pub fn height(&self) -> i32 {
+        unsafe { curses::getmaxy(self.inner) }
+    }
+
+    /// Creates a sub-window to this window
+    pub fn subwindow<'child>(
+        &'child mut self,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+    ) -> CursesResult<Window<'child>> {
+        let inner = unsafe { curses::subwin(self.inner, height, width, y, x) };
+        if inner == null_mut() {
+            return Err(CursesError);
+        } else {
+            Ok(Window {
+                inner,
+                parent: PhantomData,
+            })
         }
     }
 
@@ -29,7 +64,10 @@ impl Window {
     }
 
     /// Sets an attribute for future writes
-    pub fn set_attribute(&mut self, attribute: CHType) -> CursesResult<ActiveAttribute> {
+    pub fn set_attribute<'attribute>(
+        &'attribute mut self,
+        attribute: CHType,
+    ) -> CursesResult<ActiveAttribute<'attribute, 'window>> {
         ActiveAttribute::new(attribute, self)
     }
 
@@ -63,7 +101,7 @@ impl Window {
     }
 }
 
-impl Drop for Window {
+impl<'window> Drop for Window<'window> {
     fn drop(&mut self) {
         unsafe { curses::endwin() };
     }
