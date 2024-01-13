@@ -14,3 +14,14 @@ impl std::fmt::Debug for CursesError {
         std::fmt::Display::fmt(self, f)
     }
 }
+
+#[macro_export]
+macro_rules! try_curses {
+    ($expr: expr) => {
+        if $expr == ::curses::OK {
+            Ok(())
+        } else {
+            Err($crate::CursesError)
+        }
+    };
+}
