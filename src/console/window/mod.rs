@@ -24,17 +24,17 @@ impl Window {
     }
 
     /// Sets the foreground and background color of the window
-    pub fn set_color(&self, color: CHType) -> CursesResult<()> {
+    pub fn set_color(&mut self, color: CHType) -> CursesResult<()> {
         try_curses!(curses::wbkgd(self.inner, color | b' ' as CHType))
     }
 
     /// Sets an attribute for future writes
-    pub fn set_attribute(&self, attribute: CHType) -> CursesResult<ActiveAttribute> {
+    pub fn set_attribute(&mut self, attribute: CHType) -> CursesResult<ActiveAttribute> {
         ActiveAttribute::new(attribute, self)
     }
 
     /// Writes `s` to the window
-    pub fn write(&self, s: &str) -> CursesResult<()> {
+    pub fn write(&mut self, s: &str) -> CursesResult<()> {
         try_curses!(curses::waddnstr(
             self.inner,
             s.as_ptr() as _,
@@ -44,21 +44,21 @@ impl Window {
     }
 
     /// Writes `s` to the window with `attribute`
-    pub fn write_with_attribute(&self, s: &str, attribute: CHType) -> CursesResult<()> {
-        let active_attribute = self.set_attribute(attribute)?;
-        self.write(s)?;
+    pub fn write_with_attribute(&mut self, s: &str, attribute: CHType) -> CursesResult<()> {
+        let mut active_attribute = self.set_attribute(attribute)?;
+        active_attribute.write(s)?;
         active_attribute.end()
     }
 
     /// Gets a character from the keyboard
     #[allow(unused_unsafe)]
-    pub fn get_char(&self) -> CursesResult<i32> {
+    pub fn get_char(&mut self) -> CursesResult<i32> {
         let ret = unsafe { curses::wgetch(self.inner) };
         try_curses!(ret).map(|_| ret)
     }
 
     /// Gets the underlying curses window
-    pub(super) unsafe fn inner(&self) -> *mut curses::Window {
+    pub(super) unsafe fn inner(&mut self) -> *mut curses::Window {
         self.inner
     }
 }

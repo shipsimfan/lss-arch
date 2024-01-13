@@ -19,7 +19,7 @@ pub struct Console {
 }
 
 /// Sets the basic options in curses for the program
-fn set_basic_options(window: &Window) -> CursesResult<()> {
+fn set_basic_options(window: &mut Window) -> CursesResult<()> {
     try_curses!(curses::start_color())?;
     try_curses!(curses::cbreak())?;
     try_curses!(curses::noecho())?;
@@ -30,8 +30,8 @@ fn set_basic_options(window: &Window) -> CursesResult<()> {
 impl Console {
     /// Creates a new [`Window`]
     pub fn new(title: &str) -> CursesResult<Self> {
-        let root = Window::new_root()?;
-        set_basic_options(&root)?;
+        let mut root = Window::new_root()?;
+        set_basic_options(&mut root)?;
 
         let colors = Colors::new()?;
 
