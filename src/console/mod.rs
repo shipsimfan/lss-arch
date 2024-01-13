@@ -1,5 +1,6 @@
 use crate::try_curses;
 use colors::Colors;
+use error::CursesResult;
 use window::Window;
 
 mod colors;
@@ -18,7 +19,7 @@ pub struct Console {
 }
 
 /// Sets the basic options in curses for the program
-fn set_basic_options(window: &Window) -> Result<(), CursesError> {
+fn set_basic_options(window: &Window) -> CursesResult<()> {
     try_curses!(curses::start_color())?;
     try_curses!(curses::cbreak())?;
     try_curses!(curses::noecho())?;
@@ -28,7 +29,7 @@ fn set_basic_options(window: &Window) -> Result<(), CursesError> {
 
 impl Console {
     /// Creates a new [`Window`]
-    pub fn new(title: &str) -> Result<Self, CursesError> {
+    pub fn new(title: &str) -> CursesResult<Self> {
         let root = Window::new_root()?;
         set_basic_options(&root)?;
 
@@ -41,7 +42,7 @@ impl Console {
     }
 
     /// Gets a character from the keyboard
-    pub fn get_char(&mut self) -> Result<i32, CursesError> {
+    pub fn get_char(&mut self) -> CursesResult<i32> {
         self.root.get_char()
     }
 }

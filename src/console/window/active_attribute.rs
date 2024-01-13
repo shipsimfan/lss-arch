@@ -1,5 +1,5 @@
 use super::Window;
-use crate::{try_curses, CursesError};
+use crate::{console::CursesError, try_curses};
 use curses::CHType;
 
 pub struct ActiveAttribute<'a> {

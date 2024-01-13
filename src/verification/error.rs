@@ -1,23 +1,33 @@
-use crate::CursesError;
+use crate::{console::CursesError, error::Error};
+use std::fmt::Display;
+
+/// A type that might contain a [`VerificationError`]
+pub(super) type VerificationResult<T> = Result<T, VerificationError>;
 
 /// An error while verifying the system state
 pub enum VerificationError {
     Curses(CursesError),
 }
 
-impl std::error::Error for VerificationError {}
-
-impl std::fmt::Display for VerificationError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl Error for VerificationError {
+    fn is_curses_error(&self) -> bool {
         match self {
-            VerificationError::Curses(error) => error.fmt(f),
+            VerificationError::Curses(_) => true,
+        }
+    }
+
+    fn into_curses_error(self) -> Option<CursesError> {
+        match self {
+            VerificationError::Curses(error) => Some(error),
         }
     }
 }
 
-impl std::fmt::Debug for VerificationError {
+impl Display for VerificationError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, f)
+        match self {
+            VerificationError::Curses(error) => error.fmt(f),
+        }
     }
 }
 
