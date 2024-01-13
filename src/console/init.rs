@@ -3,7 +3,7 @@ use crate::try_curses;
 use std::ptr::NonNull;
 
 /// Initializes curses
-pub(super) fn init(title: &str) -> CursesResult<(Colors, i32, i32)> {
+pub(super) fn init(title: &str) -> CursesResult<(NonNull<curses::Window>, Colors, i32, i32)> {
     let root_window = start_curses()?;
     let colors = Colors::new()?;
 
@@ -15,7 +15,7 @@ pub(super) fn init(title: &str) -> CursesResult<(Colors, i32, i32)> {
     let width = get_width(root_window)?;
     let height = get_height(root_window)?;
 
-    Ok((colors, width, height))
+    Ok((root_window, colors, width, height))
 }
 
 /// Starts curses

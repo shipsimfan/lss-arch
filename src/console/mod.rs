@@ -1,6 +1,8 @@
+use crate::try_curses;
 use colors::Colors;
 use error::CursesResult;
 use init::init;
+use std::ptr::NonNull;
 use window::Window;
 
 mod colors;
@@ -12,22 +14,26 @@ pub use error::CursesError;
 
 /// A curses instance
 pub struct Console {
+    /// The root window of the console
+    root: NonNull<curses::Window>,
+
     /// The colors for the application
     colors: Colors,
 
-    /// The width of the terminal
+    /// The width of the console
     width: i32,
 
-    /// The height of the terminal
+    /// The height of the console
     height: i32,
 }
 
 impl Console {
     /// Creates a new [`Console`]
     pub fn new(title: &str) -> CursesResult<Self> {
-        let (colors, width, height) = init(title)?;
+        let (root, colors, width, height) = init(title)?;
 
         Ok(Console {
+            root,
             colors,
             width,
             height,
@@ -52,6 +58,12 @@ impl Console {
     // Creates a new [`Window`] on the console
     pub fn new_window(&mut self, width: i32, height: i32, title: &str) -> CursesResult<Window> {
         Window::new(self, width, height, title)
+    }
+
+    pub(self) fn full_refresh(&mut self) -> CursesResult<()> {
+        try_curses!(curses::touchwin(self.root.as_ptr()))?;
+        try_curses!(curses::refresh())?;
+        Ok(())
     }
 }
 

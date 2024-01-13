@@ -1,6 +1,5 @@
-use super::{Console, CursesError, CursesResult};
+use super::{Console, CursesResult};
 use crate::try_curses;
-use curses::CHType;
 use std::ptr::NonNull;
 
 mod init;
@@ -32,8 +31,7 @@ impl<'window> Window<'window> {
 
         let inner = init::create_window(x, y, width, height, console.colors().window_color())?;
 
-        // TODO: Add the shadow
-
+        init::write_shadow(x, y, width, height, Some(console.colors()))?;
         init::write_border(inner)?;
         init::write_title(inner, width, title)?;
 
@@ -55,6 +53,9 @@ impl<'window> Drop for Window<'window> {
     fn drop(&mut self) {
         unsafe { curses::delwin(self.inner.as_ptr()) };
 
-        // TODO: Erase the shadow
+        let (x, y) = init::calculate_position(self.width, self.height, self.console);
+        init::write_shadow(x, y, self.width, self.height, None).ok();
+
+        self.console.full_refresh().ok();
     }
 }

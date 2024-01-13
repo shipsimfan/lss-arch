@@ -1,5 +1,5 @@
 use crate::{
-    console::{error::CursesResult, Console, CursesError},
+    console::{colors::Colors, error::CursesResult, Console, CursesError},
     try_curses,
 };
 use curses::CHType;
@@ -22,6 +22,39 @@ pub(super) fn create_window(
 ) -> CursesResult<NonNull<curses::Window>> {
     let window = NonNull::new(unsafe { curses::newwin(height, width, y, x) }).ok_or(CursesError)?;
     try_curses!(curses::wbkgd(window.as_ptr(), color | b' ' as CHType)).map(|_| window)
+}
+
+/// Writes the shadow behind a window
+pub(super) fn write_shadow(
+    x: i32,
+    y: i32,
+    width: i32,
+    height: i32,
+    colors: Option<&Colors>,
+) -> CursesResult<()> {
+    if let Some(colors) = colors {
+        try_curses!(curses::attron(colors.shadow_color()))?;
+    }
+
+    try_curses!(curses::mvaddnstr(y + height, x + 1, " ".as_ptr() as _, 1))?;
+    for _ in 1..width {
+        try_curses!(curses::addnstr(" ".as_ptr() as _, 1))?;
+    }
+
+    for iy in 0..height - 1 {
+        try_curses!(curses::mvaddnstr(
+            y + 1 + iy,
+            x + width,
+            " ".as_ptr() as _,
+            1
+        ))?;
+    }
+
+    if let Some(colors) = colors {
+        try_curses!(curses::attroff(colors.shadow_color()))?;
+    }
+    try_curses!(curses::refresh())?;
+    Ok(())
 }
 
 /// Writes the border around the window
