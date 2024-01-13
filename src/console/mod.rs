@@ -35,9 +35,7 @@ impl Console {
         let colors = Colors::new()?;
 
         root.set_color(colors.background_color())?;
-        let bold = root.set_attribute(curses::A_BOLD)?;
-        root.write(title)?;
-        drop(bold);
+        root.write_with_attribute(title, curses::A_BOLD)?;
 
         Ok(Console { root, colors })
     }

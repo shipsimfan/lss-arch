@@ -8,8 +8,6 @@ pub struct Window {
     inner: *mut curses::Window,
 }
 
-pub struct ActiveAttribute(CHType);
-
 impl Window {
     /// Create the root window and initialize curses
     pub(super) fn new_root() -> Result<Self, CursesError> {
@@ -23,12 +21,7 @@ impl Window {
 
     /// Sets the foreground and background color of the window
     pub fn set_color(&mut self, color: CHType) -> Result<(), CursesError> {
-        try_curses!(curses::wbkgd(self.inner, color))
-    }
-
-    /// Set an attribute for future writes
-    pub fn set_attribute(&mut self, attribute: CHType) -> Result<ActiveAttribute, CursesError> {
-        try_curses!(curses::wattron(self.inner, attribute)).map(|_| ActiveAttribute(attribute))
+        try_curses!(curses::wbkgd(self.inner, color | b' ' as CHType))
     }
 
     /// Writes `s` to the window
@@ -39,6 +32,13 @@ impl Window {
             s.len() as i32
         ))?;
         try_curses!(curses::wrefresh(self.inner))
+    }
+
+    /// Writes `s` to the window with `attribute`
+    pub fn write_with_attribute(&mut self, s: &str, attribute: CHType) -> Result<(), CursesError> {
+        try_curses!(curses::wattron(self.inner, attribute))?;
+        self.write(s)?;
+        try_curses!(curses::wattroff(self.inner, attribute))
     }
 
     /// Gets a character from the keyboard
@@ -57,11 +57,5 @@ impl Window {
 impl Drop for Window {
     fn drop(&mut self) {
         unsafe { curses::endwin() };
-    }
-}
-
-impl Drop for ActiveAttribute {
-    fn drop(&mut self) {
-        unsafe { curses::attroff(self.0) };
     }
 }
