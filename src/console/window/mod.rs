@@ -1,8 +1,8 @@
-use super::{CursesError, CursesResult};
+use super::{colors::Colors, CursesError, CursesResult};
 use crate::try_curses;
 use active_attribute::ActiveAttribute;
 use curses::CHType;
-use std::{marker::PhantomData, ptr::null_mut};
+use std::ptr::null_mut;
 
 mod active_attribute;
 
@@ -11,8 +11,8 @@ pub struct Window<'window> {
     /// The underlying curses window
     inner: *mut curses::Window,
 
-    /// Represents the parent window
-    parent: PhantomData<&'window mut ()>,
+    /// The colors of the console
+    colors: Option<&'window Colors>,
 }
 
 impl<'window> Window<'window> {
@@ -24,7 +24,7 @@ impl<'window> Window<'window> {
         } else {
             Ok(Window {
                 inner,
-                parent: PhantomData,
+                colors: None,
             })
         }
     }
@@ -37,25 +37,6 @@ impl<'window> Window<'window> {
     /// Gets the height of the window
     pub fn height(&self) -> i32 {
         unsafe { curses::getmaxy(self.inner) }
-    }
-
-    /// Creates a sub-window to this window
-    pub fn subwindow<'child>(
-        &'child mut self,
-        x: i32,
-        y: i32,
-        width: i32,
-        height: i32,
-    ) -> CursesResult<Window<'child>> {
-        let inner = unsafe { curses::subwin(self.inner, height, width, y, x) };
-        if inner == null_mut() {
-            return Err(CursesError);
-        } else {
-            Ok(Window {
-                inner,
-                parent: PhantomData,
-            })
-        }
     }
 
     /// Sets the foreground and background color of the window
@@ -77,8 +58,7 @@ impl<'window> Window<'window> {
             self.inner,
             s.as_ptr() as _,
             s.len() as i32
-        ))?;
-        try_curses!(curses::wrefresh(self.inner))
+        ))
     }
 
     /// Writes `s` to the window with `attribute`
@@ -86,6 +66,11 @@ impl<'window> Window<'window> {
         let mut active_attribute = self.set_attribute(attribute)?;
         active_attribute.write(s)?;
         active_attribute.end()
+    }
+
+    /// Flushes any changes to the screen
+    pub fn flush(&mut self) -> CursesResult<()> {
+        try_curses!(curses::wrefresh(self.inner))
     }
 
     /// Gets a character from the keyboard
@@ -98,6 +83,33 @@ impl<'window> Window<'window> {
     /// Gets the underlying curses window
     pub(super) unsafe fn inner(&mut self) -> *mut curses::Window {
         self.inner
+    }
+
+    /// Creates a sub-window to this window
+    pub(super) fn subwindow_with_colors<'child>(
+        &'child mut self,
+        x: i32,
+        y: i32,
+        width: i32,
+        height: i32,
+        colors: &'child Colors,
+    ) -> CursesResult<Window<'child>> {
+        // Create the window
+        let inner = unsafe { curses::derwin(self.inner, height, width, y, x) };
+        if inner == null_mut() {
+            return Err(CursesError);
+        }
+
+        let mut window = Window {
+            inner,
+            colors: Some(colors),
+        };
+
+        // Setup the window
+        window.set_color(colors.window_color())?;
+        try_curses!(curses::r#box(window.inner, 0, 0))?;
+
+        Ok(window)
     }
 }
 

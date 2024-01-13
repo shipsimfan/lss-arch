@@ -20,7 +20,6 @@ pub struct Console<'a> {
 
 /// Sets the basic options in curses for the program
 fn set_basic_options(window: &mut Window) -> CursesResult<()> {
-    try_curses!(curses::start_color())?;
     try_curses!(curses::cbreak())?;
     try_curses!(curses::noecho())?;
     try_curses!(curses::keypad(window.inner(), true))?;
@@ -31,12 +30,13 @@ impl<'a> Console<'a> {
     /// Creates a new [`Window`]
     pub fn new(title: &str) -> CursesResult<Self> {
         let mut root = Window::new_root()?;
-        set_basic_options(&mut root)?;
-
         let colors = Colors::new()?;
+
+        set_basic_options(&mut root)?;
 
         root.set_color(colors.background_color())?;
         root.write_with_attribute(title, curses::A_BOLD)?;
+        root.flush()?;
 
         Ok(Console { root, colors })
     }
@@ -46,8 +46,7 @@ impl<'a> Console<'a> {
         let x = (self.root.width() / 2) - (width / 2);
         let y = (self.root.height() / 2) - (height / 2);
 
-        let mut window = self.root.subwindow(x, y, width, height)?;
-        window.set_color(self.colors.window_color())?;
-        Ok(window)
+        self.root
+            .subwindow_with_colors(x, y, width, height, &self.colors)
     }
 }

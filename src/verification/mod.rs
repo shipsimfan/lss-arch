@@ -9,6 +9,7 @@ mod error;
 pub fn is_valid_system(console: &mut Console) -> VerificationResult<()> {
     // TODO: Create the verify progress window
     let mut window = console.new_window(41, 6)?;
+    window.flush()?;
 
     // TODO: Run the verification steps
 

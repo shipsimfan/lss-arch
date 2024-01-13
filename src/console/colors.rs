@@ -45,6 +45,8 @@ fn init_color_pair(pair: c_short, f: c_short, b: c_short) -> CursesResult<()> {
 impl Colors {
     /// Initializes the colors used by the system
     pub fn new() -> CursesResult<Self> {
+        try_curses!(curses::start_color())?;
+
         init_colors()?;
         init_color_pairs()?;
 
