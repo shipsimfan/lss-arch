@@ -1,53 +1,49 @@
 use crate::try_curses;
-use std::ptr::null_mut;
+use colors::Colors;
+use window::Window;
 
+mod colors;
 mod error;
+mod window;
 
 pub use error::CursesError;
 
 /// A curses instance
 pub struct Console {
-    /// The underlying curses window
-    screen: *mut curses::Window,
+    /// The root window
+    root: Window,
+
+    /// The colors for the application
+    colors: Colors,
+}
+
+/// Sets the basic options in curses for the program
+fn set_basic_options(window: &mut Window) -> Result<(), CursesError> {
+    try_curses!(curses::start_color())?;
+    try_curses!(curses::cbreak())?;
+    try_curses!(curses::noecho())?;
+    try_curses!(curses::keypad(window.inner(), true))?;
+    try_curses!(curses::curs_set(0))
 }
 
 impl Console {
     /// Creates a new [`Window`]
     pub fn new(title: &str) -> Result<Self, CursesError> {
-        // Create the screen and initialize curses
-        let screen = unsafe { curses::initscr() };
-        if screen == null_mut() {
-            return Err(CursesError);
-        }
+        let mut root = Window::new_root()?;
+        set_basic_options(&mut root)?;
 
-        // Setup basic input options
-        try_curses!(unsafe { curses::cbreak() })?;
-        try_curses!(unsafe { curses::noecho() })?;
-        try_curses!(unsafe { curses::keypad(screen, true) })?;
+        let colors = Colors::new()?;
 
-        // Disable the cursor
-        try_curses!(unsafe { curses::curs_set(0) })?;
+        root.set_color(colors.background_color())?;
+        let bold = root.set_attribute(curses::A_BOLD)?;
+        root.write(title)?;
+        drop(bold);
 
-        // TODO: Set background to dark blue
-
-        // TODO: Set foreground to yellow
-
-        // Write the title
-        try_curses!(unsafe { curses::waddnstr(screen, title.as_ptr() as _, title.len() as _) })?;
-        try_curses!(unsafe { curses::wrefresh(screen) })?;
-
-        Ok(Console { screen })
+        Ok(Console { root, colors })
     }
 
     /// Gets a character from the keyboard
     pub fn get_char(&mut self) -> Result<i32, CursesError> {
-        let ret = unsafe { curses::wgetch(self.screen) };
-        try_curses!(ret).map(|_| ret)
-    }
-}
-
-impl Drop for Console {
-    fn drop(&mut self) {
-        unsafe { curses::endwin() };
+        self.root.get_char()
     }
 }

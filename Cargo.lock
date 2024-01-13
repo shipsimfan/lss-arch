@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "curses"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-curses#0d59b32e203dd4e2424778bb8217c3556bd5ad46"
+source = "git+https://github.com/shipsimfan/lib-curses#6a6f2b4d221720686ed74eab6bc69892568540c3"
 
 [[package]]
 name = "lss-arch"
