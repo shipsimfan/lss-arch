@@ -1,22 +1,29 @@
 use console::{Console, CursesError};
+use verification::is_valid_system;
 
 mod console;
+mod verification;
 
-fn run() -> Result<(), CursesError> {
-    let mut window = Console::new()?;
+const TITLE: &str = "LSS-Arch Installer";
+
+const SUCCESS: i32 = 0;
+const FAILURE: i32 = -1;
+
+fn run() -> Result<i32, CursesError> {
+    let mut window = Console::new(TITLE)?;
+
+    if !is_valid_system()? {
+        return Ok(FAILURE);
+    };
 
     window.get_char()?;
-
-    drop(window);
-    Ok(())
+    Ok(SUCCESS)
 }
 
 fn main() {
-    match run() {
-        Ok(()) => {}
-        Err(error) => {
-            eprintln!("Error: {}", error);
-            std::process::exit(-1);
-        }
-    }
+    let exit_code = run()
+        .map_err(|error| eprintln!("Error: {}", error))
+        .unwrap_or(-1);
+
+    std::process::exit(exit_code);
 }

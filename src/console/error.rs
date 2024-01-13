@@ -18,10 +18,10 @@ impl std::fmt::Debug for CursesError {
 #[macro_export]
 macro_rules! try_curses {
     ($expr: expr) => {
-        if $expr == ::curses::OK {
-            Ok(())
-        } else {
+        if $expr == ::curses::ERR {
             Err($crate::CursesError)
+        } else {
+            Ok(())
         }
     };
 }
