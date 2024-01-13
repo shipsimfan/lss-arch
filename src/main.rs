@@ -1,13 +1,9 @@
-use std::io::Write;
-use window::{CursesError, Window};
+use console::{Console, CursesError};
 
-mod window;
+mod console;
 
 fn run() -> Result<(), CursesError> {
-    let mut window = Window::new()?;
-
-    writeln!(window, "LSS-Arch v{} installer", env!("CARGO_PKG_VERSION")).unwrap();
-    window.flush().unwrap();
+    let mut window = Console::new()?;
 
     window.get_char()?;
 
