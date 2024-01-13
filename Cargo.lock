@@ -3,9 +3,15 @@
 version = 3
 
 [[package]]
+name = "curses"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-curses#00c7c11fedf817f5022795736338f9ec4228793c"
+
+[[package]]
 name = "lss-arch"
 version = "0.1.0"
 dependencies = [
+ "curses",
  "net-utils",
 ]
 

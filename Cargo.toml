@@ -1,5 +1,6 @@
-[package]
-name = "lss-arch"
+[workspace]
+
+[workspace.package]
 version = "0.1.0"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2021"
@@ -8,5 +9,22 @@ repository = "https://github.com/shipsimfan/lss-arch"
 license = "GPL-3.0-or-later"
 publish = false
 
-[dependencies]
+[workspace.dependencies]
 net-utils.git = "https://github.com/shipsimfan/lib-net-utils"
+curses.git = "https://github.com/shipsimfan/lib-curses"
+
+
+[package]
+name = "lss-arch"
+
+version.workspace = true
+authors.workspace = true
+edition.workspace = true
+description.workspace = true
+repository.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+net-utils.workspace = true
+curses.workspace = true
