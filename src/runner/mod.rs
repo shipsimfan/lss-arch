@@ -17,8 +17,5 @@ pub fn run() -> Result<bool, CursesError> {
         error
     ));
 
-    unsafe { curses::refresh() };
-    unsafe { curses::getch() };
-
     Ok(true)
 }

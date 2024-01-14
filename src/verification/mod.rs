@@ -1,9 +1,13 @@
 use crate::console::{Console, ProgressWindow};
 use error::VerificationResult;
+use step::{verification_steps, VerificationStep};
 
 mod error;
+mod step;
 
 const TITLE: &str = "Verifying System Status";
+
+verification_steps!(run_step, [root::VerifyRoot]);
 
 /// Verifies the system is in a correct state to install LSS-Arch
 ///
@@ -12,7 +16,15 @@ pub fn is_valid_system(console: &mut Console) -> VerificationResult<()> {
     // TODO: Create the verify progress window
     let mut window = ProgressWindow::new(console, 3, TITLE)?;
 
-    // TODO: Run the verification steps
+    run_steps(&mut window)?;
+
+    Ok(())
+}
+
+fn run_step<Step: VerificationStep>(window: &mut ProgressWindow) -> VerificationResult<()> {
+    window.step(Step::MESSAGE)?;
+
+    Step::execute()?;
 
     window.get_char()?;
     Ok(())
