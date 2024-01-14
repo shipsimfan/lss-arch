@@ -30,7 +30,9 @@ impl<'window> ProgressWindow<'window> {
         self.window.write_at(2, 1, &self.blank)?;
         self.window.write_at(2, 1, message.as_bytes())?;
 
-        self.progress_bar.step()
+        self.progress_bar.step()?;
+
+        self.window.refresh()
     }
 
     pub fn get_char(&mut self) -> CursesResult<i32> {

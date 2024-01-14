@@ -86,6 +86,10 @@ impl<'window> Window<'window> {
         &self.console
     }
 
+    pub fn refresh(&mut self) -> CursesResult<()> {
+        curses::wrefresh(self.inner)
+    }
+
     pub fn write_at(&mut self, x: i32, y: i32, s: &[u8]) -> CursesResult<()> {
         curses::mvwaddnstr(self.inner, x, y, s)
     }

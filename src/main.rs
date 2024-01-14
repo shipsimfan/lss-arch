@@ -1,3 +1,4 @@
+mod common;
 mod console;
 mod error;
 mod runner;
