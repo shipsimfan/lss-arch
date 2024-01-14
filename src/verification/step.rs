@@ -1,3 +1,4 @@
+use super::NotVerifiedError;
 use std::fmt::Display;
 
 pub trait VerificationStep {
@@ -41,7 +42,4 @@ macro_rules! verification_steps {
         )*
     };
 }
-
 pub(super) use verification_steps;
-
-use super::NotVerifiedError;

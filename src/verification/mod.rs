@@ -20,7 +20,6 @@ verification_steps!(
 ///
 /// This function assumes we booted from an Arch Linux install medium
 pub fn is_valid_system(console: &mut Console) -> VerificationResult<()> {
-    // TODO: Create the verify progress window
     let mut window = ProgressWindow::new(console, 3, TITLE)?;
 
     run_steps(&mut window)?;

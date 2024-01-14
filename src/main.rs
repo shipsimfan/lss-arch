@@ -1,6 +1,7 @@
 mod common;
 mod console;
 mod error;
+mod host;
 mod runner;
 mod verification;
 

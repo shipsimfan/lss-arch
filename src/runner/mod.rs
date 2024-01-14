@@ -1,5 +1,6 @@
 use crate::{
     console::{Console, CursesError, MessageWindow},
+    host::configure_and_install,
     verification::is_valid_system,
 };
 use util::try_step;
@@ -24,6 +25,11 @@ pub fn run() -> Result<bool, CursesError> {
     });
 
     MessageWindow::run(&mut console, "Welcome", WELCOME_MESSAGE)?;
+
+    try_step!(configure_and_install(&mut console), |error| {
+        console.colors_mut().enable_error_mode()?;
+        MessageWindow::run(&mut console, "Error", &[&error])?;
+    });
 
     Ok(true)
 }
