@@ -8,6 +8,12 @@ mod util;
 
 const TITLE: &str = "LSS-Arch Installer";
 
+const WELCOME_MESSAGE: &[&dyn std::fmt::Display] = &[
+    &"Welcome to the LSS-Arch Linux installer! This program will",
+    &"guide you through the process of installing and setting up",
+    &"your new LSS-Arch Linux system.",
+];
+
 /// Installs LSS-Arch
 pub fn run() -> Result<bool, CursesError> {
     let mut console = Console::new(TITLE)?;
@@ -16,6 +22,8 @@ pub fn run() -> Result<bool, CursesError> {
         console.colors_mut().enable_error_mode()?;
         MessageWindow::run(&mut console, "Error", &[&error])?;
     });
+
+    MessageWindow::run(&mut console, "Welcome", WELCOME_MESSAGE)?;
 
     Ok(true)
 }
