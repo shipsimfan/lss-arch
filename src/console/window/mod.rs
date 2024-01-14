@@ -1,13 +1,11 @@
-use super::{Console, CursesResult};
-use crate::try_curses;
-use std::ptr::NonNull;
+use super::{curses, Console, CursesResult};
 
-mod init;
+mod shadow;
 
 /// A curses window
 pub struct Window<'window> {
     /// The underlying curses window
-    inner: NonNull<curses::Window>,
+    inner: curses::Window,
 
     /// The width of the window
     width: i32,
@@ -15,8 +13,34 @@ pub struct Window<'window> {
     /// The height of the window
     height: i32,
 
+    /// The x-position of the window
+    x: i32,
+
+    /// The y-position of the window
+    y: i32,
+
     /// The console this window is on
     console: &'window mut Console,
+}
+
+/// Calculates a centered `(x, y)` position for the window
+fn calculate_position(width: i32, height: i32, console: &Console) -> (i32, i32) {
+    let x = (console.width() / 2) - (width / 2);
+    let y = (console.height() / 2) - (height / 2);
+    (x, y)
+}
+
+/// Writes the title to the window
+fn write_title(window: curses::Window, width: i32, title: &str) -> CursesResult<()> {
+    let x = (width / 2) - ((title.len() as i32 + 2) / 2);
+
+    curses::mvwaddch(window, x, 0, ' ')?;
+    curses::wattron(window, curses::A_BOLD)?;
+    curses::waddnstr(window, title.as_bytes())?;
+    curses::wattroff(window, curses::A_BOLD)?;
+    curses::waddch(window, ' ')?;
+
+    curses::wrefresh(window)
 }
 
 impl<'window> Window<'window> {
@@ -27,35 +51,37 @@ impl<'window> Window<'window> {
         height: i32,
         title: &str,
     ) -> CursesResult<Self> {
-        let (x, y) = init::calculate_position(width, height, console);
+        let (x, y) = calculate_position(width, height, console);
 
-        let inner = init::create_window(x, y, width, height, console.colors().window_color())?;
+        let inner = curses::newwin(x, y, width, height)?;
 
-        init::write_shadow(x, y, width, height, Some(console.colors()))?;
-        init::write_border(inner)?;
-        init::write_title(inner, width, title)?;
+        curses::wbkgd(inner, console.colors().window_color())?;
+
+        shadow::write(console, x, y, width, height, true)?;
+        curses::r#box(inner, 0, 0)?;
+        write_title(inner, width, title)?;
 
         Ok(Window {
             inner,
             width,
             height,
+            x,
+            y,
             console,
         })
     }
 
     /// Gets a character from the keyboard
     pub fn get_char(&mut self) -> CursesResult<i32> {
-        try_curses!(curses::wgetch(self.inner.as_ptr()))
+        curses::wgetch(self.inner)
     }
 }
 
 impl<'window> Drop for Window<'window> {
     fn drop(&mut self) {
-        unsafe { curses::delwin(self.inner.as_ptr()) };
+        curses::delwin(self.inner).ok();
 
-        let (x, y) = init::calculate_position(self.width, self.height, self.console);
-        init::write_shadow(x, y, self.width, self.height, None).ok();
-
+        shadow::write(self.console, self.x, self.y, self.width, self.height, false).ok();
         self.console.full_refresh().ok();
     }
 }

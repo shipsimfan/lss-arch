@@ -1,13 +1,10 @@
-use crate::try_curses;
 use colors::Colors;
 use error::CursesResult;
-use init::init;
-use std::ptr::NonNull;
 use window::Window;
 
 mod colors;
+mod curses;
 mod error;
-mod init;
 mod window;
 
 pub use error::CursesError;
@@ -15,7 +12,7 @@ pub use error::CursesError;
 /// A curses instance
 pub struct Console {
     /// The root window of the console
-    root: NonNull<curses::Window>,
+    root: curses::Window,
 
     /// The colors for the application
     colors: Colors,
@@ -27,10 +24,35 @@ pub struct Console {
     height: i32,
 }
 
+/// Sets the basic options in curses for the program
+fn set_basic_options(window: curses::Window) -> CursesResult<()> {
+    curses::cbreak()?;
+    curses::noecho()?;
+    curses::keypad(window, true)?;
+    curses::curs_set(0)
+}
+
+/// Writes the title to the background
+fn write_title(window: curses::Window, title: &str) -> CursesResult<()> {
+    curses::wattron(window, curses::A_BOLD)?;
+    curses::waddnstr(window, title.as_bytes())?;
+    curses::wattroff(window, curses::A_BOLD)
+}
+
 impl Console {
     /// Creates a new [`Console`]
     pub fn new(title: &str) -> CursesResult<Self> {
-        let (root, colors, width, height) = init(title)?;
+        let root = curses::initscr()?;
+        let colors = Colors::new()?;
+
+        set_basic_options(root)?;
+        curses::wbkgd(root, colors.background_color())?;
+
+        write_title(root, title)?;
+        curses::wrefresh(root)?;
+
+        let width = curses::getmaxx(root)?;
+        let height = curses::getmaxy(root)?;
 
         Ok(Console {
             root,
@@ -61,14 +83,17 @@ impl Console {
     }
 
     pub(self) fn full_refresh(&mut self) -> CursesResult<()> {
-        try_curses!(curses::touchwin(self.root.as_ptr()))?;
-        try_curses!(curses::refresh())?;
-        Ok(())
+        curses::touchwin(self.root)?;
+        curses::refresh()
+    }
+
+    pub(self) fn root(&mut self) -> curses::Window {
+        self.root
     }
 }
 
 impl Drop for Console {
     fn drop(&mut self) {
-        unsafe { curses::endwin() };
+        curses::endwin().ok();
     }
 }

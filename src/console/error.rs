@@ -22,15 +22,3 @@ impl Display for CursesError {
         write!(f, "curses reported an error")
     }
 }
-
-#[macro_export]
-macro_rules! try_curses {
-    ($expr: expr) => {{
-        let result = unsafe { $expr };
-        if result == ::curses::ERR {
-            Err($crate::console::CursesError)
-        } else {
-            Ok(result)
-        }
-    }};
-}
