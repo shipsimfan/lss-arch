@@ -1,4 +1,7 @@
-use super::{curses, Console, CursesResult};
+use super::{
+    curses::{self, CHType},
+    Console, CursesResult,
+};
 
 mod shadow;
 
@@ -85,6 +88,18 @@ impl<'window> Window<'window> {
 
     pub fn write_at(&mut self, x: i32, y: i32, s: &[u8]) -> CursesResult<()> {
         curses::mvwaddnstr(self.inner, x, y, s)
+    }
+
+    pub fn write_at_with_attribute(
+        &mut self,
+        x: i32,
+        y: i32,
+        a: CHType,
+        s: &[u8],
+    ) -> CursesResult<()> {
+        curses::wattron(self.inner, a)?;
+        self.write_at(x, y, s)?;
+        curses::wattroff(self.inner, a)
     }
 
     /// Gets a character from the keyboard

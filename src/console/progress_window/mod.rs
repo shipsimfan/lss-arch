@@ -17,7 +17,7 @@ impl<'window> ProgressWindow<'window> {
         let mut window = console.new_window(width, 7, title)?;
         let progress_bar = ProgressBar::new(&mut window, total_steps)?;
 
-        let blank = vec![b' '; width as usize - 2];
+        let blank = vec![b' '; width as usize - 3];
 
         Ok(ProgressWindow {
             progress_bar,
@@ -27,8 +27,8 @@ impl<'window> ProgressWindow<'window> {
     }
 
     pub fn step(&mut self, message: &str) -> CursesResult<()> {
-        self.window.write_at(1, 1, &self.blank)?;
-        self.window.write_at(1, 1, message.as_bytes())?;
+        self.window.write_at(2, 1, &self.blank)?;
+        self.window.write_at(2, 1, message.as_bytes())?;
 
         self.progress_bar.step()
     }

@@ -1,5 +1,5 @@
 use super::{curses, CursesResult};
-use curses::{CHType, COLOR_BLACK, COLOR_BLUE, COLOR_WHITE, COLOR_YELLOW};
+use curses::{CHType, COLOR_BLACK, COLOR_BLUE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW};
 use std::ffi::c_short;
 
 /// Color manager
@@ -19,7 +19,8 @@ fn init_colors() -> CursesResult<()> {
     curses::init_color(COLOR_BLACK, 0, 0, 0)?;
     curses::init_color(COLOR_BLUE, 0, 0, 656)?;
     curses::init_color(COLOR_YELLOW, 968, 984, 312)?;
-    curses::init_color(COLOR_WHITE, 656, 656, 656)
+    curses::init_color(COLOR_WHITE, 656, 656, 656)?;
+    curses::init_color(COLOR_RED, 656, 0, 0)
 }
 
 /// Initializes all the color pairs
@@ -53,5 +54,9 @@ impl Colors {
     /// The color used for window shadows
     pub fn shadow_color(&self) -> CHType {
         curses::color_pair!(SHADOW_COLOR_PAIR)
+    }
+
+    pub fn enable_error_mode(&mut self) -> CursesResult<()> {
+        curses::init_pair(BACKGROUND_COLOR_PAIR, COLOR_WHITE, COLOR_RED)
     }
 }

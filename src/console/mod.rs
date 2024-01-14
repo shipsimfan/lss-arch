@@ -5,10 +5,12 @@ use window::Window;
 mod colors;
 mod curses;
 mod error;
+mod message_window;
 mod progress_window;
 mod window;
 
 pub use error::CursesError;
+pub use message_window::MessageWindow;
 pub use progress_window::ProgressWindow;
 
 /// A curses instance
@@ -82,6 +84,11 @@ impl Console {
     // Creates a new [`Window`] on the console
     pub fn new_window(&mut self, width: i32, height: i32, title: &str) -> CursesResult<Window> {
         Window::new(self, width, height, title)
+    }
+
+    /// Gets the [`Colors`] for the program
+    pub fn colors_mut(&mut self) -> &mut Colors {
+        &mut self.colors
     }
 
     pub(self) fn full_refresh(&mut self) -> CursesResult<()> {

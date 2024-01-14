@@ -1,7 +1,9 @@
 use super::{error::CursesResult, CursesError};
 use std::{ffi::c_short, ptr::NonNull};
 
-pub use curses::{color_pair, CHType, A_BOLD, COLOR_BLACK, COLOR_BLUE, COLOR_WHITE, COLOR_YELLOW};
+pub use curses::{
+    color_pair, CHType, A_BOLD, COLOR_BLACK, COLOR_BLUE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW,
+};
 
 pub(super) type Window = NonNull<curses::Window>;
 
