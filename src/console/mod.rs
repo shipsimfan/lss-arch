@@ -5,6 +5,7 @@ use window::Window;
 mod colors;
 mod curses;
 mod error;
+mod input_window;
 mod message_window;
 mod progress_window;
 mod select_window;
