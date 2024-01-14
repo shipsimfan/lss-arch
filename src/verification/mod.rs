@@ -1,4 +1,4 @@
-use crate::console::Console;
+use crate::console::{Console, ProgressWindow};
 use error::VerificationResult;
 
 mod error;
@@ -10,7 +10,7 @@ const TITLE: &str = "Verifying System Status";
 /// This function assumes we booted from an Arch Linux install medium
 pub fn is_valid_system(console: &mut Console) -> VerificationResult<()> {
     // TODO: Create the verify progress window
-    let mut window = console.new_window(41, 6, TITLE)?;
+    let mut window = ProgressWindow::new(console, 3, TITLE)?;
 
     // TODO: Run the verification steps
 

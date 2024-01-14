@@ -71,9 +71,29 @@ impl<'window> Window<'window> {
         })
     }
 
+    pub fn width(&self) -> i32 {
+        self.width
+    }
+
+    pub fn height(&self) -> i32 {
+        self.height
+    }
+
+    pub fn console(&self) -> &Console {
+        &self.console
+    }
+
+    pub fn write_at(&mut self, x: i32, y: i32, s: &[u8]) -> CursesResult<()> {
+        curses::mvwaddnstr(self.inner, x, y, s)
+    }
+
     /// Gets a character from the keyboard
     pub fn get_char(&mut self) -> CursesResult<i32> {
         curses::wgetch(self.inner)
+    }
+
+    pub(super) fn inner(&mut self) -> curses::Window {
+        self.inner
     }
 }
 

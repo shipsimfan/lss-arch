@@ -36,6 +36,16 @@ pub(super) fn delwin(window: Window) -> CursesResult<()> {
     try_curses!(curses::delwin(window.as_ptr())).map(|_| ())
 }
 
+pub(super) fn derwin(
+    parent: Window,
+    x: i32,
+    y: i32,
+    width: i32,
+    height: i32,
+) -> CursesResult<Window> {
+    NonNull::new(unsafe { curses::derwin(parent.as_ptr(), height, width, y, x) }).ok_or(CursesError)
+}
+
 pub(super) fn endwin() -> CursesResult<()> {
     try_curses!(curses::endwin()).map(|_| ())
 }
@@ -66,6 +76,17 @@ pub(super) fn keypad(window: Window, bf: bool) -> CursesResult<()> {
 
 pub(super) fn mvwaddch(window: Window, x: i32, y: i32, c: char) -> CursesResult<()> {
     try_curses!(curses::mvwaddch(window.as_ptr(), y, x, c as u32)).map(|_| ())
+}
+
+pub(super) fn mvwaddnstr(window: Window, x: i32, y: i32, s: &[u8]) -> CursesResult<()> {
+    try_curses!(curses::mvwaddnstr(
+        window.as_ptr(),
+        y,
+        x,
+        s.as_ptr() as _,
+        s.len() as _
+    ))
+    .map(|_| ())
 }
 
 pub(super) fn newwin(x: i32, y: i32, width: i32, height: i32) -> CursesResult<Window> {

@@ -5,9 +5,11 @@ use window::Window;
 mod colors;
 mod curses;
 mod error;
+mod progress_window;
 mod window;
 
 pub use error::CursesError;
+pub use progress_window::ProgressWindow;
 
 /// A curses instance
 pub struct Console {
