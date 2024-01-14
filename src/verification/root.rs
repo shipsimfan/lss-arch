@@ -23,7 +23,7 @@ impl Display for NotRunningAsRoot {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "currently not running as root, please run this script as root"
+            "The program is currently not running as root, please run this program as root"
         )
     }
 }

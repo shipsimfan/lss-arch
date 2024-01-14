@@ -7,7 +7,7 @@ mod step;
 
 const TITLE: &str = "Verifying System Status";
 
-verification_steps!(run_step, [root::VerifyRoot]);
+verification_steps!(run_step, [root::VerifyRoot, boot_mode::VerifyBootMode]);
 
 /// Verifies the system is in a correct state to install LSS-Arch
 ///
