@@ -7,11 +7,13 @@ mod curses;
 mod error;
 mod message_window;
 mod progress_window;
+mod select_window;
 mod window;
 
 pub use error::CursesError;
 pub use message_window::MessageWindow;
 pub use progress_window::ProgressWindow;
+pub use select_window::SelectWindow;
 
 /// A curses instance
 pub struct Console {

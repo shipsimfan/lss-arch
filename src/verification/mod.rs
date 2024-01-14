@@ -31,7 +31,5 @@ fn run_step<Step: VerificationStep>(window: &mut ProgressWindow) -> Verification
     window.step(Step::MESSAGE)?;
 
     Step::execute()?;
-
-    window.get_char()?;
     Ok(())
 }

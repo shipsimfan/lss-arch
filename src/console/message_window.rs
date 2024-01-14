@@ -1,17 +1,11 @@
 use super::{error::CursesResult, Console};
-use std::fmt::Display;
 
 pub struct MessageWindow;
 
 impl MessageWindow {
-    pub fn run(console: &mut Console, title: &str, message: &[&dyn Display]) -> CursesResult<()> {
-        let message = message
-            .iter()
-            .map(|line| line.to_string())
-            .collect::<Vec<_>>();
-
+    pub fn run(console: &mut Console, title: &str, message: &[String]) -> CursesResult<()> {
         let mut longest_line = 0;
-        for line in &message {
+        for line in message {
             if line.len() as i32 > longest_line {
                 longest_line = line.len() as i32;
             }
