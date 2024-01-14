@@ -11,7 +11,11 @@ impl VerificationStep for VerifyRoot {
     const MESSAGE: &'static str = "Verifying running as root";
 
     fn execute() -> Result<(), Self::Error> {
-        Err(NotRunningAsRoot)
+        if unsafe { linux::unistd::geteuid() } == 0 {
+            Ok(())
+        } else {
+            Err(NotRunningAsRoot)
+        }
     }
 }
 

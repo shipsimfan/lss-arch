@@ -12,6 +12,7 @@ publish = false
 [workspace.dependencies]
 net-utils.git = "https://github.com/shipsimfan/lib-net-utils"
 curses.git = "https://github.com/shipsimfan/lib-curses"
+linux.git = "https://github.com/shipsimfan/lib-linux"
 
 
 [package]
@@ -28,3 +29,4 @@ publish.workspace = true
 [dependencies]
 net-utils.workspace = true
 curses.workspace = true
+linux.workspace = true

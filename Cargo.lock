@@ -8,10 +8,16 @@ version = "0.1.0"
 source = "git+https://github.com/shipsimfan/lib-curses#9108c6bca5a087b774938c44e4ba3961ed2efd27"
 
 [[package]]
+name = "linux"
+version = "0.1.0"
+source = "git+https://github.com/shipsimfan/lib-linux#db9403b3d98dc31ebb75ac6ef7305008f28fc34c"
+
+[[package]]
 name = "lss-arch"
 version = "0.1.0"
 dependencies = [
  "curses",
+ "linux",
  "net-utils",
 ]
 
