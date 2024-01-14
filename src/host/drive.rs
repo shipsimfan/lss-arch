@@ -16,6 +16,10 @@ impl HostStep for SetupDrive {
         Ok(SetupDrive {})
     }
 
+    fn confirm(&self) -> Vec<(String, String)> {
+        vec![]
+    }
+
     fn install_message(&self) -> String {
         format!("Partitioning and mounting X")
     }

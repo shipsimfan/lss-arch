@@ -8,6 +8,8 @@ pub trait HostStep: 'static + Sized {
 
     fn configure(console: &mut Console) -> Result<Self, Self::ConfigurationError>;
 
+    fn confirm(&self) -> Vec<(String, String)>;
+
     fn install_message(&self) -> String;
     fn install(self) -> Result<(), Self::InstallError>;
 }
@@ -37,6 +39,16 @@ macro_rules! steps {
                 Ok(Configuration {
                     $($mod),*
                 })
+            }
+
+            pub(self) fn confirmation(&self) -> Vec<(String, String)> {
+                let mut values = Vec::new();
+
+                $(
+                    values.extend(self.$mod.confirm());
+                )*
+
+                values
             }
 
             pub(self) fn steps(&self) -> i32 {
