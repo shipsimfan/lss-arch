@@ -1,8 +1,6 @@
-use crate::console::MessageWindow;
-use crate::console::{Console, ProgressWindow};
+use crate::console::{Console, MessageWindow, ProgressWindow};
 use error::HostInstallResult;
-use step::steps;
-use step::HostStep;
+use step::{steps, HostStep};
 
 mod error;
 mod step;

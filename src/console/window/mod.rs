@@ -78,10 +78,6 @@ impl<'window> Window<'window> {
         self.width
     }
 
-    pub fn height(&self) -> i32 {
-        self.height
-    }
-
     pub fn console(&self) -> &Console {
         &self.console
     }

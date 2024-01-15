@@ -1,6 +1,10 @@
 use super::step::HostStep;
-use crate::console::{InputWindow, SelectWindow, U8Input};
+use crate::{
+    common::Command,
+    console::{InputWindow, SelectWindow, U8Input},
+};
 use configuration_error::ConfigurationError;
+use fdisk::FDisk;
 use install_error::InstallError;
 use std::{
     num::NonZeroU8,
@@ -8,11 +12,22 @@ use std::{
 };
 
 mod configuration_error;
+mod fdisk;
 mod install_error;
 
 pub struct SetupDrive {
     drive: PathBuf,
     swap_size: Option<NonZeroU8>,
+}
+
+impl SetupDrive {
+    fn partition_name(&self, index: usize) -> PathBuf {
+        self.drive.with_file_name(format!(
+            "{}{}",
+            self.drive.file_name().unwrap().to_string_lossy(),
+            index
+        ))
+    }
 }
 
 impl HostStep for SetupDrive {
@@ -85,6 +100,64 @@ impl HostStep for SetupDrive {
     }
 
     fn install(self) -> Result<(), Self::InstallError> {
+        // Unmount to be safe
+        Command::new("umount").args(["-R", "/mnt"]).run().ok();
+        Command::new("swapoff").arg("-a").run().ok();
+
+        // Get the parition names
+        let boot_partition = self.partition_name(1);
+        let swap_partition = self.swap_size.map(|_| self.partition_name(2));
+        let root_partition = self.partition_name(self.swap_size.map(|_| 3).unwrap_or(2));
+
+        // Parition the drive
+        let mut fdisk = FDisk::spawn(&self.drive)?;
+        fdisk.create_guid_table()?;
+        fdisk.create_partition(Some("+1G"), Some("1"))?; // Boot partition
+        self.swap_size
+            .map(|swap_size| fdisk.create_partition(Some(&format!("+{}G", swap_size)), Some("19")))
+            .unwrap_or(Ok(()))?; // Swap partition
+        fdisk.create_partition(None, None)?; // Root partition
+        fdisk.finalize()?;
+
+        // Format the partitions
+        Command::new("mkfs.vfat")
+            .args(["-F", "32"])
+            .arg(&boot_partition)
+            .run()
+            .map_err(InstallError::boot_format)?;
+
+        if let Some(swap_partition) = &swap_partition {
+            Command::new("mkswap")
+                .arg(&swap_partition)
+                .run()
+                .map_err(InstallError::swap_format)?;
+        }
+
+        Command::new("mkfs.ext4")
+            .arg(&root_partition)
+            .run()
+            .map_err(InstallError::root_format)?;
+
+        // Mount the partitions
+        Command::new("mount")
+            .arg(root_partition)
+            .arg("/mnt")
+            .run()
+            .map_err(InstallError::root_mount)?;
+
+        Command::new("mount")
+            .arg(boot_partition)
+            .args(["/mnt/boot", "--mkdir"])
+            .run()
+            .map_err(InstallError::boot_mount)?;
+
+        if let Some(swap_partition) = swap_partition {
+            Command::new("swapon")
+                .arg(swap_partition)
+                .run()
+                .map_err(InstallError::swap_mount)?;
+        }
+
         Ok(())
     }
 }

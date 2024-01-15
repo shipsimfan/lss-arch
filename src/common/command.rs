@@ -16,6 +16,11 @@ impl Command {
         Command(std_command)
     }
 
+    pub fn arg<S: AsRef<OsStr>>(&mut self, arg: S) -> &mut Command {
+        self.0.arg(arg);
+        self
+    }
+
     pub fn args<I, S>(&mut self, args: I) -> &mut Command
     where
         I: IntoIterator<Item = S>,
