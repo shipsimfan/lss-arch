@@ -12,6 +12,7 @@ mod select_window;
 mod window;
 
 pub use error::CursesError;
+pub use input_window::{InputWindow, U8Input};
 pub use message_window::MessageWindow;
 pub use progress_window::ProgressWindow;
 pub use select_window::SelectWindow;

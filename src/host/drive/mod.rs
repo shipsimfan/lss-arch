@@ -1,14 +1,18 @@
 use super::step::HostStep;
-use crate::console::SelectWindow;
+use crate::console::{InputWindow, SelectWindow, U8Input};
 use configuration_error::ConfigurationError;
 use install_error::InstallError;
-use std::path::{Path, PathBuf};
+use std::{
+    num::NonZeroU8,
+    path::{Path, PathBuf},
+};
 
 mod configuration_error;
 mod install_error;
 
 pub struct SetupDrive {
     drive: PathBuf,
+    swap_size: Option<NonZeroU8>,
 }
 
 impl HostStep for SetupDrive {
@@ -46,13 +50,34 @@ impl HostStep for SetupDrive {
                 .collect(),
         )?;
 
+        let mut swap_size_input = U8Input::new("Swap Size");
+        InputWindow::run(
+            console,
+            "Enter Swap Size",
+            "Enter the size of the swap partition, or zero for none",
+            &mut [&mut swap_size_input],
+        )?;
+
+        let swap_size = NonZeroU8::new(swap_size_input.unwrap().unwrap_or(0));
+
         Ok(SetupDrive {
             drive: drives.swap_remove(selected_drive),
+            swap_size,
         })
     }
 
     fn confirm(&self) -> Vec<(&str, String)> {
-        vec![("Drive", self.drive.display().to_string())]
+        vec![
+            ("Drive", self.drive.display().to_string()),
+            (
+                "Swap Size",
+                if let Some(swap_size) = self.swap_size {
+                    format!("{} GB", swap_size)
+                } else {
+                    "None".to_owned()
+                },
+            ),
+        ]
     }
 
     fn install_message(&self) -> String {
