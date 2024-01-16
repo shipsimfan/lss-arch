@@ -10,7 +10,7 @@ source = "git+https://github.com/shipsimfan/lib-curses#9108c6bca5a087b774938c44e
 [[package]]
 name = "linux"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-linux#db9403b3d98dc31ebb75ac6ef7305008f28fc34c"
+source = "git+https://github.com/shipsimfan/lib-linux#4b5d511c7f2c21c82d32d6791eb9b7dcbb6854a2"
 
 [[package]]
 name = "lss-arch"

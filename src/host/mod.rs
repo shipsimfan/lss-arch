@@ -12,7 +12,8 @@ steps!(
     [
         drive::SetupDrive,
         packages::InstallPackages,
-        fstab::GenFStab
+        fstab::GenFStab,
+        chroot::CHRoot
     ]
 );
 

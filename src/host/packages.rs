@@ -8,7 +8,11 @@ pub struct InstallPackagesError(std::io::Error);
 
 pub const PACKAGES: &[&str] = &[
     // Core packages
-    "base", "linux",
+    "base",
+    "linux",
+    // Bootloader
+    "grub",
+    "efibootmgr",
 ];
 
 impl HostStep for InstallPackages {
