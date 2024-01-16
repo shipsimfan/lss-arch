@@ -12,7 +12,7 @@ mod select_window;
 mod window;
 
 pub use error::CursesError;
-pub use input_window::{InputWindow, U8Input};
+pub use input_window::{InputWindow, StringInput, U8Input};
 pub use message_window::MessageWindow;
 pub use progress_window::ProgressWindow;
 pub use select_window::SelectWindow;
@@ -42,9 +42,9 @@ fn set_basic_options(window: curses::Window) -> CursesResult<()> {
 
 /// Writes the title to the background
 fn write_title(window: curses::Window, title: &str) -> CursesResult<()> {
-    curses::wattron(window, curses::A_BOLD)?;
+    curses::wattron(window, ::curses::A_BOLD)?;
     curses::waddnstr(window, title.as_bytes())?;
-    curses::wattroff(window, curses::A_BOLD)
+    curses::wattroff(window, ::curses::A_BOLD)
 }
 
 impl Console {

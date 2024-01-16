@@ -1,4 +1,5 @@
-use super::{curses::CHType, error::CursesResult, window::Window, Console};
+use super::{error::CursesResult, window::Window, Console};
+use curses::{KEY_DOWN, KEY_ENTER, KEY_UP};
 
 pub struct SelectWindow<'a> {
     window: Window<'a>,
@@ -8,7 +9,7 @@ pub struct SelectWindow<'a> {
 
     x: i32,
 
-    selected_color: CHType,
+    selected_color: curses::CHType,
 }
 
 impl<'a> SelectWindow<'a> {
@@ -24,9 +25,9 @@ impl<'a> SelectWindow<'a> {
             let c = window.get_char()?;
 
             match c {
-                x if x == b'\n' as i32 => return Ok(window.current_option),
-                65 => window.up()?,
-                66 => window.down()?,
+                KEY_ENTER | 10 => return Ok(window.current_option),
+                KEY_UP => window.up()?,
+                KEY_DOWN => window.down()?,
                 _ => {}
             }
         }

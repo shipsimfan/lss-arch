@@ -1,5 +1,7 @@
+mod string;
 mod u8;
 
+pub use string::StringInput;
 pub use u8::U8Input;
 
 pub trait Input {

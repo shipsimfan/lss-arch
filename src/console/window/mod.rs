@@ -1,7 +1,4 @@
-use super::{
-    curses::{self, CHType},
-    Console, CursesResult,
-};
+use super::{curses, Console, CursesResult};
 
 mod shadow;
 
@@ -38,9 +35,9 @@ fn write_title(window: curses::Window, width: i32, title: &str) -> CursesResult<
     let x = (width / 2) - ((title.len() as i32 + 2) / 2);
 
     curses::mvwaddch(window, x, 0, ' ')?;
-    curses::wattron(window, curses::A_BOLD)?;
+    curses::wattron(window, ::curses::A_BOLD)?;
     curses::waddnstr(window, title.as_bytes())?;
-    curses::wattroff(window, curses::A_BOLD)?;
+    curses::wattroff(window, ::curses::A_BOLD)?;
     curses::waddch(window, ' ')?;
 
     curses::wrefresh(window)
@@ -57,6 +54,7 @@ impl<'window> Window<'window> {
         let (x, y) = calculate_position(width, height, console);
 
         let inner = curses::newwin(x, y, width, height)?;
+        curses::keypad(inner, true)?;
 
         curses::wbkgd(inner, console.colors().window_color())?;
 
@@ -98,7 +96,7 @@ impl<'window> Window<'window> {
         &mut self,
         x: i32,
         y: i32,
-        a: CHType,
+        a: ::curses::CHType,
         s: &[u8],
     ) -> CursesResult<()> {
         curses::wattron(self.inner, a)?;

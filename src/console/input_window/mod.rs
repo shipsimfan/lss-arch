@@ -1,17 +1,25 @@
-use super::{curses::CHType, error::CursesResult, window::Window, Console};
+use super::{error::CursesResult, window::Window, Console};
+use curses::{KEY_BACKSPACE, KEY_DOWN, KEY_ENTER, KEY_UP};
 use input::Input;
 
 mod input;
 
-pub use input::U8Input;
+pub use input::{StringInput, U8Input};
 
 pub struct InputWindow<'a> {
     window: Window<'a>,
     width: i32,
-    selected_color: CHType,
+    selected_color: curses::CHType,
 
     inputs: &'a mut [&'a mut dyn Input],
     index: usize,
+}
+
+fn is_valid_char(c: i32) -> bool {
+    if c < 0 || c > u8::MAX as i32 {
+        return false;
+    }
+    (c as u8).is_ascii_graphic() || (c as u8) == b' '
 }
 
 impl<'a> InputWindow<'a> {
@@ -27,11 +35,11 @@ impl<'a> InputWindow<'a> {
             let c = window.get_char()?;
 
             match c {
-                x if x == b'\n' as i32 => return Ok(()),
-                x if x >= b'0' as i32 && x <= b'9' as i32 => window.char(c as u8)?,
-                65 => window.up()?,
-                66 => window.down()?,
-                127 => window.backspace()?,
+                KEY_ENTER | 10 => return Ok(()),
+                x if is_valid_char(x) => window.char(c as u8)?,
+                KEY_UP => window.up()?,
+                KEY_DOWN => window.down()?,
+                KEY_BACKSPACE => window.backspace()?,
                 _ => {}
             }
         }

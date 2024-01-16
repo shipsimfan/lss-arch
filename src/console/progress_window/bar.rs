@@ -1,12 +1,8 @@
-use crate::console::{
-    curses::{self, CHType},
-    error::CursesResult,
-    window::Window,
-};
+use crate::console::{curses, error::CursesResult, window::Window};
 
 pub(super) struct ProgressBar {
     window: curses::Window,
-    bar_color: CHType,
+    bar_color: ::curses::CHType,
 
     width: i32,
 
@@ -23,7 +19,7 @@ fn write_percentage(
     width: i32,
     percentage: i32,
     bar_end: i32,
-    bar_color: CHType,
+    bar_color: ::curses::CHType,
 ) -> CursesResult<()> {
     let string = format!("{}%", percentage).into_bytes();
     let x = (width / 2) - (string.len() as i32 / 2);

@@ -1,4 +1,5 @@
 use super::{error::CursesResult, Console};
+use curses::KEY_ENTER;
 
 pub struct MessageWindow;
 
@@ -25,7 +26,12 @@ impl MessageWindow {
             "<  OK  >".as_bytes(),
         )?;
 
-        while window.get_char()? != b'\n' as i32 {}
+        loop {
+            let c = window.get_char()?;
+            if c == KEY_ENTER || c == 10 {
+                break;
+            }
+        }
 
         Ok(())
     }

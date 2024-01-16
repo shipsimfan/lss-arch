@@ -5,7 +5,7 @@ version = 3
 [[package]]
 name = "curses"
 version = "0.1.0"
-source = "git+https://github.com/shipsimfan/lib-curses#9108c6bca5a087b774938c44e4ba3961ed2efd27"
+source = "git+https://github.com/shipsimfan/lib-curses#df784c743396bb0b97cd43cc6016ed15a467f348"
 
 [[package]]
 name = "linux"

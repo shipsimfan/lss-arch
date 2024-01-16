@@ -1,5 +1,5 @@
 use super::{curses, CursesResult};
-use curses::{CHType, COLOR_BLACK, COLOR_BLUE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW};
+use ::curses::{CHType, COLOR_BLACK, COLOR_BLUE, COLOR_RED, COLOR_WHITE, COLOR_YELLOW};
 use std::ffi::c_short;
 
 /// Color manager
