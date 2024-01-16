@@ -33,5 +33,10 @@ pub fn run() -> Result<bool, CursesError> {
         MessageWindow::run(&mut console, "Error", &[error.to_string()])?;
     });
 
-    Ok(true)
+    MessageWindow::run(
+        &mut console,
+        "Install Complete",
+        &["The installation has finished! You may now reboot your computer".to_owned()],
+    )
+    .map(|_| true)
 }
