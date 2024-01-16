@@ -1,5 +1,5 @@
 use crate::console::CursesError;
-use std::fmt::Display;
+use std::{convert::Infallible, fmt::Display};
 
 /// An error while installing LSS-Arch
 pub trait Error: 'static + Display + Sized {
@@ -13,3 +13,5 @@ pub trait Error: 'static + Display + Sized {
         None
     }
 }
+
+impl Error for Infallible {}
