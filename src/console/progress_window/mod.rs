@@ -34,8 +34,4 @@ impl<'window> ProgressWindow<'window> {
 
         self.window.refresh()
     }
-
-    pub fn get_char(&mut self) -> CursesResult<i32> {
-        self.window.get_char()
-    }
 }

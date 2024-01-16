@@ -7,7 +7,14 @@ mod step;
 
 const TITLE: &str = "Installing LSS-Arch";
 
-steps!(run_step, [drive::SetupDrive, packages::InstallPackages]);
+steps!(
+    run_step,
+    [
+        drive::SetupDrive,
+        packages::InstallPackages,
+        fstab::GenFStab
+    ]
+);
 
 pub fn configure_and_install(console: &mut Console) -> HostInstallResult<()> {
     let configuration = Configuration::get(console)?;

@@ -1,6 +1,6 @@
 use super::step::HostStep;
-use crate::common::Command;
-use std::{convert::Infallible, fmt::Display};
+use crate::{common::Command, error::Error};
+use std::fmt::Display;
 
 pub struct InstallPackages;
 
@@ -12,8 +12,7 @@ pub const PACKAGES: &[&str] = &[
 ];
 
 impl HostStep for InstallPackages {
-    type ConfigurationError = Infallible;
-
+    type ConfigurationError = InstallPackagesError;
     type InstallError = InstallPackagesError;
 
     fn configure(_: &mut crate::console::Console) -> Result<Self, Self::ConfigurationError> {
@@ -25,7 +24,7 @@ impl HostStep for InstallPackages {
     }
 
     fn install_message(&self) -> String {
-        format!("Installing packages")
+        format!("Installing packages (this may take a while)")
     }
 
     fn install(self) -> Result<(), Self::InstallError> {
@@ -43,6 +42,8 @@ impl HostStep for InstallPackages {
             .map_err(|error| InstallPackagesError(error))
     }
 }
+
+impl Error for InstallPackagesError {}
 
 impl Display for InstallPackagesError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

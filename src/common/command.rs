@@ -1,6 +1,6 @@
 use std::{
     ffi::OsStr,
-    process::{Command as StdCommand, Stdio},
+    process::{Command as StdCommand, Output, Stdio},
 };
 
 pub struct Command(StdCommand);
@@ -16,6 +16,11 @@ impl Command {
         Command(std_command)
     }
 
+    pub fn stdout_piped(&mut self) -> &mut Command {
+        self.0.stdout(Stdio::piped());
+        self
+    }
+
     pub fn arg<S: AsRef<OsStr>>(&mut self, arg: S) -> &mut Command {
         self.0.arg(arg);
         self
@@ -28,6 +33,15 @@ impl Command {
     {
         self.0.args(args);
         self
+    }
+
+    pub fn output(&mut self) -> std::io::Result<Output> {
+        let result = self.0.output()?;
+        if result.status.success() {
+            Ok(result)
+        } else {
+            Err(std::io::ErrorKind::Other.into())
+        }
     }
 
     pub fn run(&mut self) -> std::io::Result<()> {
