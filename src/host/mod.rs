@@ -14,6 +14,7 @@ steps!(
         packages::InstallPackages,
         fstab::GenFStab,
         locale::Locale,
+        hostname::Hostname,
         chroot::CHRoot
     ]
 );
