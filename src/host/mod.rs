@@ -13,6 +13,7 @@ steps!(
         drive::SetupDrive,
         packages::InstallPackages,
         fstab::GenFStab,
+        locale::Locale,
         chroot::CHRoot
     ]
 );
