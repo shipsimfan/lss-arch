@@ -17,6 +17,7 @@ steps!(
         hostname::Hostname,
         os_release::OSRelease,
         internet::Internet,
+        ssh::SSH,
         chroot::CHRoot
     ]
 );

@@ -15,6 +15,7 @@ pub const PACKAGES: &[&str] = &[
     "efibootmgr",
     // System Utilities
     "dhcpcd",
+    "openssh",
     // Text editor,
     "vim",
 ];
