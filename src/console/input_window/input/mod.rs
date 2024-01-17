@@ -1,6 +1,8 @@
+mod ipv4;
 mod string;
 mod u8;
 
+pub use ipv4::IPv4Input;
 pub use string::StringInput;
 pub use u8::U8Input;
 

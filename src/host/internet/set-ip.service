@@ -1,0 +1,13 @@
+[Unit]
+Description=Sets a static IP
+After=network.target
+
+[Service]
+User=root
+ExecStart=/root/set-ip.sh
+Type=oneshot
+RemainAfterExit=yes
+Restart=no
+
+[Install]
+WantedBy=multi-user.target

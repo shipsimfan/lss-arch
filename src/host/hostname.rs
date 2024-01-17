@@ -25,16 +25,17 @@ impl HostStep for Hostname {
         )
         .map_err(|error| HostnameConfigurationError(error))?;
 
-        let mut hostname = hostname_input.unwrap();
+        let mut hostname = hostname_input.unwrap().trim().to_owned();
         if hostname.len() == 0 {
             hostname = "unnamed".to_owned();
         }
+        hostname.push('\n');
 
         Ok(Hostname(hostname))
     }
 
     fn confirm(&self) -> Vec<(&str, String)> {
-        vec![("Hostname", self.0.clone())]
+        vec![("Hostname", self.0.trim().to_owned())]
     }
 
     fn install_message(&self) -> String {

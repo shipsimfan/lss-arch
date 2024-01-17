@@ -4,7 +4,7 @@ use input::Input;
 
 mod input;
 
-pub use input::{StringInput, U8Input};
+pub use input::{IPv4Input, StringInput, U8Input};
 
 pub struct InputWindow<'a> {
     window: Window<'a>,

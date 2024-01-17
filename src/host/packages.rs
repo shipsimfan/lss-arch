@@ -13,6 +13,10 @@ pub const PACKAGES: &[&str] = &[
     // Bootloader
     "grub",
     "efibootmgr",
+    // System Utilities
+    "dhcpcd",
+    // Text editor,
+    "vim",
 ];
 
 impl HostStep for InstallPackages {

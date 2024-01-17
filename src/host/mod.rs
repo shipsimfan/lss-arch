@@ -16,6 +16,7 @@ steps!(
         locale::Locale,
         hostname::Hostname,
         os_release::OSRelease,
+        internet::Internet,
         chroot::CHRoot
     ]
 );
