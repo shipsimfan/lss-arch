@@ -8,6 +8,7 @@ use std::{ffi::CStr, fmt::Display};
 
 pub struct CHRoot {
     time_zone: String,
+    username: String,
 }
 
 pub struct CHRootConfigurationError(CursesError);
@@ -39,11 +40,29 @@ impl HostStep for CHRoot {
             time_zone = "America/Toronto".to_owned();
         }
 
-        Ok(CHRoot { time_zone })
+        let mut username_input = StringInput::new("Username", 24);
+        InputWindow::run(
+            console,
+            "Set Username",
+            "Enter the name for the initial user. Defaults to \"lhart\"",
+            &mut [&mut username_input],
+        )?;
+        let mut username = username_input.unwrap().trim().to_owned();
+        if username.len() == 0 {
+            username = "lhart".to_owned();
+        }
+
+        Ok(CHRoot {
+            time_zone,
+            username,
+        })
     }
 
     fn confirm(&self) -> Vec<(&str, String)> {
-        vec![("Time Zone", self.time_zone.clone())]
+        vec![
+            ("Time Zone", self.time_zone.clone()),
+            ("Username", self.username.clone()),
+        ]
     }
 
     fn install_message(&self) -> String {
@@ -57,7 +76,7 @@ impl HostStep for CHRoot {
 
         Command::new("arch-chroot")
             .args(["/mnt", "/root/chroot.sh"])
-            .arg(self.time_zone)
+            .args([self.time_zone, self.username])
             .run()
             .map_err(|error| CHRootError::CHRoot(error))
     }
