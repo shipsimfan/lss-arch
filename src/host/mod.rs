@@ -15,6 +15,7 @@ steps!(
         fstab::GenFStab,
         locale::Locale,
         hostname::Hostname,
+        os_release::OSRelease,
         chroot::CHRoot
     ]
 );
