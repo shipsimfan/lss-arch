@@ -26,9 +26,9 @@ impl HostStep for Locale {
     }
 
     fn install(self) -> Result<(), Self::InstallError> {
-        std::fs::write("/mnt/etc/locale.conf", LOCALE_CONF)
-            .map_err(|error| LocaleInstallError(error))?;
-        std::fs::write("/mnt/etc/locale.gen", LOCALE_GEN).map_err(|error| LocaleInstallError(error))
+        std::fs::write("/mnt/etc/locale.conf", LOCALE_CONF)?;
+        std::fs::write("/mnt/etc/locale.gen", LOCALE_GEN)?;
+        Ok(())
     }
 }
 
@@ -37,5 +37,11 @@ impl Error for LocaleInstallError {}
 impl Display for LocaleInstallError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "Failed to install the locale - {}", self.0)
+    }
+}
+
+impl From<std::io::Error> for LocaleInstallError {
+    fn from(error: std::io::Error) -> Self {
+        LocaleInstallError(error)
     }
 }
