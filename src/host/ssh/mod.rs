@@ -8,7 +8,10 @@ pub struct SSHInstallError(std::io::Error);
 
 const SSHD_CONFIG: &[u8] = include_bytes!("sshd_config");
 
-const KEYS: &[&[u8]] = &[include_bytes!("work-laptop.pub")];
+const KEYS: &[&[u8]] = &[
+    include_bytes!("desktop.pub"),
+    include_bytes!("work-laptop.pub"),
+];
 
 impl HostStep for SSH {
     type ConfigurationError = SSHInstallError;
