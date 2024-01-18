@@ -16,6 +16,7 @@ pub const PACKAGES: &[&str] = &[
     // System Utilities
     "dhcpcd",
     "openssh",
+    "pkgfile",
     // Text editor,
     "vim",
 ];
