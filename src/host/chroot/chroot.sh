@@ -37,6 +37,11 @@ chmod 600 /home/$USERNAME/.ssh/authorized_keys
 
 chown -R $USERNAME:$USERNAME /home/$USERNAME/.ssh
 
+rm /root/authorized_keys
+
 # Install bootloader
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=LSS-ARCH
 grub-mkconfig -o /boot/grub/grub.cfg
+
+# Cleanup this file
+rm /root/chroot.sh

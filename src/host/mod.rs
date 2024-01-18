@@ -19,7 +19,8 @@ steps!(
         skel::UserSkeleton,
         internet::Internet,
         ssh::SSH,
-        chroot::CHRoot
+        chroot::CHRoot,
+        unmount::Unmount
     ]
 );
 
