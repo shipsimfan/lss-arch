@@ -48,7 +48,7 @@ impl Error for SSHInstallError {}
 
 impl Display for SSHInstallError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Failed to install the locale - {}", self.0)
+        write!(f, "Failed to install ssh - {}", self.0)
     }
 }
 

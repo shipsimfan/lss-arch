@@ -17,6 +17,7 @@ pub const PACKAGES: &[&str] = &[
     "dhcpcd",
     "openssh",
     "pkgfile",
+    "sudo",
     // Text editor,
     "vim",
 ];

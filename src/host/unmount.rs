@@ -19,11 +19,11 @@ impl HostStep for Unmount {
     }
 
     fn install_message(&self) -> String {
-        format!("Installing the locale")
+        format!("Unmounting the drive")
     }
 
     fn install(self) -> Result<(), Self::InstallError> {
-        Command::new("unmount").args(["-R", "/mnt"]).run()?;
+        Command::new("umount").args(["-R", "/mnt"]).run()?;
         Ok(())
     }
 }

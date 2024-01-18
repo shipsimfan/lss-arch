@@ -17,6 +17,7 @@ steps!(
         hostname::Hostname,
         os_release::OSRelease,
         skel::UserSkeleton,
+        sudo::Sudo,
         internet::Internet,
         ssh::SSH,
         chroot::CHRoot,
