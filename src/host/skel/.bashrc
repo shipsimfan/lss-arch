@@ -21,6 +21,10 @@ shopt -s autocd
 # Set checking window size after each command
 shopt -s checkwinsize
 
+# Set the editor for "sudoedit" to vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
+
 # Bash prompt
 RED="\033[48;5;160m"
 BLUE="\033[48;5;027m"
