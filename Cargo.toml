@@ -1,6 +1,6 @@
 [package]
 name = "lss-arch"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Lance Hart <me@lancehart.ca>"]
 edition = "2021"
 description = "Arch Linux installer"
