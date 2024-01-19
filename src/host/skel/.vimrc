@@ -44,6 +44,7 @@ set ffs=unix,dos,mac
 
 " Enable line numbers
 set number
+set relativenumber
 
 " Tab settings
 set expandtab
