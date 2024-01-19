@@ -14,10 +14,12 @@ pub const PACKAGES: &[&str] = &[
     "grub",
     "efibootmgr",
     // System Utilities
-    "dhcpcd",
-    "openssh",
     "pkgfile",
     "sudo",
+    // Networking Utilities
+    "dhcpcd",
+    "openssh",
+    "nftables",
     // Text editor,
     "vim",
 ];

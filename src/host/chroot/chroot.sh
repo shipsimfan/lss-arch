@@ -24,6 +24,9 @@ fi
 # Enable SSH
 ln -sf /usr/lib/systemd/system/sshd.service /etc/systemd/system/multi-user.target.wants/sshd.service
 
+# Enable NFTables
+ln -sf /usr/lib/systemd/system/nftables.service /etc/systemd/system/multi-user.target.wants/nftables.service
+
 # Create user
 useradd -m -G wheel $USERNAME
 usermod -p '*' $USERNAME

@@ -20,6 +20,7 @@ steps!(
         sudo::Sudo,
         internet::Internet,
         ssh::SSH,
+        nftables::NFTables,
         chroot::CHRoot,
         unmount::Unmount
     ]
