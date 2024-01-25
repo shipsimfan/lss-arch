@@ -6,14 +6,19 @@
 [[ $- != *i* ]] && return
 
 # Aliases for colors
-alias ls="ls --color=auto"
+alias ls="ls -l --color=auto"
+alias ip="ip -color"
+
+# Grep aliases
 alias grep="grep --color=auto"
+alias egrep="grep -E --color=auto"
+alias fgrep="grep -F --color=auto"
 
 # Aliases for misspellings
 alias claer="clear"
 
 # Command not found message
-# source /usr/share/doc/pkgfile/command-not-found.bash
+source /usr/share/doc/pkgfile/command-not-found.bash
 
 # Auto "cd"
 shopt -s autocd
